@@ -5,6 +5,7 @@ from typing import override
 class EventType(Enum):
     COMPARE = 1
     SWAP = 2
+    DONE = 3
 
 
 class Event:

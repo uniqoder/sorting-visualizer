@@ -5,16 +5,16 @@ from sorting_visualizer import algorithms as algs
 
 @pytest.mark.parametrize(("values", "expected"), [([], [])])
 def test_empty_lists(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
 
 
 @pytest.mark.parametrize(("values", "expected"), [([42], [42]), ([0], [0])])
 def test_single_element(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
 
 
 @pytest.mark.parametrize(
@@ -22,9 +22,9 @@ def test_single_element(values: list[int], expected: list[int]) -> None:
     [([1, 2, 3], [1, 2, 3]), ([5, 6], [5, 6]), ([99, 100, 101], [99, 100, 101])],
 )
 def test_alread_sorted(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
 
 
 @pytest.mark.parametrize(
@@ -32,9 +32,9 @@ def test_alread_sorted(values: list[int], expected: list[int]) -> None:
     [([7, 6, 5], [5, 6, 7]), ([3, 1, 0], [0, 1, 3]), ([43, 13], [13, 43])],
 )
 def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
 
 
 @pytest.mark.parametrize(
@@ -42,9 +42,9 @@ def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
     [([-3, 1, -5, 0], [-5, -3, 0, 1]), ([-2, -1, -5, 99], [-5, -2, -1, 99])],
 )
 def test_negative_values(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
 
 
 @pytest.mark.parametrize(
@@ -52,9 +52,21 @@ def test_negative_values(values: list[int], expected: list[int]) -> None:
     [([3, 1, 3, 2, 1], [1, 1, 2, 3, 3]), ([1, 1, 1, 1], [1, 1, 1, 1])],
 )
 def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values)
+    result: list[int] = algs.bubble_sort(values)
 
-    assert values == expected
+    assert result == expected
+
+
+@pytest.mark.parametrize(
+    ("values", "expected"),
+    [([3, 1, 3, 2, 1], [1, 1, 2, 3, 3]), ([1, 1, 1, 1], [1, 1, 1, 1])],
+)
+def test_non_mutative(values: list[int], expected: list[int]) -> None:
+    org: list[int] = values.copy()
+    result: list[int] = algs.bubble_sort(values)
+
+    assert result == expected
+    assert values == org
 
 
 @pytest.mark.parametrize(
@@ -68,6 +80,6 @@ def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
     ],
 )
 def test_descending_sort(values: list[int], expected: list[int]) -> None:
-    algs.bubble_sort(values, ascending=False)
+    result: list[int] = algs.bubble_sort(values, ascending=False)
 
-    assert values == expected
+    assert result == expected
