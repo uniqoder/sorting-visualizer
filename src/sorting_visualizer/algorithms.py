@@ -154,27 +154,28 @@ def quick_sort(
 
     def partition(arr: list[int], low: int, high: int) -> int:
         onOperation(Event(EventType.SET_PIVOT, high))
-        pivot_idx: int = high
-        for i in range(low, high):
-            onOperation(Event(EventType.COMPARE, i, pivot_idx))
-            if compare(arr[i], arr[pivot_idx]):
-                if i < pivot_idx:
-                    onOperation(Event(EventType.SWAP, i, pivot_idx))
-                    arr[i], arr[pivot_idx] = arr[pivot_idx], arr[i]
-                    onOperation(Event(EventType.SET_PIVOT, i))
-                    pivot_idx = i
-            elif i > pivot_idx:
-                onOperation(Event(EventType.SWAP, i, pivot_idx))
-                arr[i], arr[pivot_idx] = arr[pivot_idx], arr[i]
-                onOperation(Event(EventType.SET_PIVOT, i))
-                pivot_idx = i
-        return pivot_idx
+        pivot: int = arr[high]
+        i: int = low - 1
+
+        for j in range(low, high):
+            onOperation(Event(EventType.COMPARE, high, j))
+            if compare(pivot, arr[j]):
+                i += 1
+                onOperation(Event(EventType.SWAP, i, j))
+                arr[i], arr[j] = arr[j], arr[i]
+
+        onOperation(Event(EventType.SWAP, i + 1, high))
+        arr[i + 1], arr[high] = arr[high], arr[i + 1]
+
+        return i + 1
 
     def sort_recursive(arr: list[int], low: int, high: int) -> None:
         if low >= high:
             return
 
         pivot_idx: int = partition(arr, low, high)
+        onOperation(Event(EventType.SET_PIVOT, pivot_idx))
+        print(arr[low:pivot_idx], [arr[pivot_idx]], arr[pivot_idx + 1 : high + 1])
 
         onOperation(Event(EventType.SPLIT, pivot_idx))
         sort_recursive(arr, low, pivot_idx - 1)
