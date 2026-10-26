@@ -68,14 +68,48 @@ def insertion_sort(
         key: int = lst[i]
         j: int = i - 1
 
-        while j >= 0 and compare(lst[j], key):
+        while j >= 0:
             onOperation(Event(EventType.COMPARE, j))
-            lst[j + 1] = lst[j]
-            onOperation(Event(EventType.WRITE, lst[j], j + 1))
-            j -= 1
+            if compare(lst[j], key):
+                onOperation(Event(EventType.WRITE, lst[j], j + 1))
+                lst[j + 1] = lst[j]
+                j -= 1
+            else:
+                break
 
         onOperation(Event(EventType.WRITE))
         lst[j + 1] = key
+
+    onOperation(Event(EventType.DONE))
+    return lst
+
+
+def merge_sort(
+    values: list[int],
+    compare: Comparator = ascending,
+    onOperation: Callable[[Event], None] | None = None,
+) -> list[int]:
+    if not onOperation:
+        onOperation = lambda e: None
+
+    def merge(a: list[int], b: list[int]) -> list[int]:
+        out: list[int] = []
+        a, b = (a, b) if len(a) < len(b) else (b, a)
+
+        for i in range(len(a)):
+            if compare(a[i], b[i]):
+                out.append(b[i])
+            else:
+                out.append(a[i])
+
+        out.append(b[-1])
+        return out
+
+    middle: int = len(values) // 2
+    lst = merge(
+        merge_sort(values[:middle], compare, onOperation),
+        merge_sort(values[middle:], compare, onOperation),
+    )
 
     onOperation(Event(EventType.DONE))
     return lst
