@@ -140,3 +140,47 @@ def merge_sort(
     if merge_sort_depth == 0:
         onOperation(Event(EventType.DONE))
     return lst
+
+
+def quick_sort(
+    values: list[int],
+    compare: Comparator = ascending,
+    onOperation: Callable[[Event], None] | None = None,
+) -> list[int]:
+    lst: list[int] = values.copy()
+
+    if not onOperation:
+        onOperation = lambda e: None
+
+    def partition(arr: list[int], low: int, high: int) -> int:
+        onOperation(Event(EventType.SET_PIVOT, high))
+        pivot_idx: int = high
+        for i in range(low, high):
+            onOperation(Event(EventType.COMPARE, i, pivot_idx))
+            if compare(arr[i], arr[pivot_idx]):
+                if i < pivot_idx:
+                    onOperation(Event(EventType.SWAP, i, pivot_idx))
+                    arr[i], arr[pivot_idx] = arr[pivot_idx], arr[i]
+                    onOperation(Event(EventType.SET_PIVOT, i))
+                    pivot_idx = i
+            elif i > pivot_idx:
+                onOperation(Event(EventType.SWAP, i, pivot_idx))
+                arr[i], arr[pivot_idx] = arr[pivot_idx], arr[i]
+                onOperation(Event(EventType.SET_PIVOT, i))
+                pivot_idx = i
+        return pivot_idx
+
+    def sort_recursive(arr: list[int], low: int, high: int) -> None:
+        if low >= high:
+            return
+
+        pivot_idx: int = partition(arr, low, high)
+
+        onOperation(Event(EventType.SPLIT, pivot_idx))
+        sort_recursive(arr, low, pivot_idx - 1)
+        sort_recursive(arr, pivot_idx + 1, high)
+
+    sort_recursive(lst, 0, len(lst) - 1)
+
+    onOperation(Event(EventType.DONE))
+    return lst
