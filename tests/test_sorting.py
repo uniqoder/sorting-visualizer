@@ -14,6 +14,9 @@ def test_empty_lists(values: list[int], expected: list[int]) -> None:
     result = algs.insertion_sort(values)
     assert result == expected
 
+    result = algs.merge_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(("values", "expected"), [([42], [42]), ([0], [0])])
 def test_single_element(values: list[int], expected: list[int]) -> None:
@@ -24,6 +27,9 @@ def test_single_element(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.insertion_sort(values)
+    assert result == expected
+
+    result = algs.merge_sort(values)
     assert result == expected
 
 
@@ -41,6 +47,9 @@ def test_alread_sorted(values: list[int], expected: list[int]) -> None:
     result = algs.insertion_sort(values)
     assert result == expected
 
+    result = algs.merge_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
@@ -54,6 +63,9 @@ def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.insertion_sort(values)
+    assert result == expected
+
+    result = algs.merge_sort(values)
     assert result == expected
 
 
@@ -71,6 +83,9 @@ def test_negative_values(values: list[int], expected: list[int]) -> None:
     result = algs.insertion_sort(values)
     assert result == expected
 
+    result = algs.merge_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
@@ -84,6 +99,9 @@ def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.insertion_sort(values)
+    assert result == expected
+
+    result = algs.merge_sort(values)
     assert result == expected
 
 
@@ -106,6 +124,10 @@ def test_non_mutative(values: list[int], expected: list[int]) -> None:
     assert result == expected
     assert values == org
 
+    result = algs.merge_sort(values)
+    assert result == expected
+    assert values == org
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
@@ -125,4 +147,7 @@ def test_descending_sort(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.insertion_sort(values, compare=algs.descending)
+    assert result == expected
+
+    result = algs.merge_sort(values, compare=algs.descending)
     assert result == expected
