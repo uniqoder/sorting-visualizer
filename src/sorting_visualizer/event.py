@@ -8,7 +8,8 @@ class EventType(Enum):
     WRITE = 3  # To write a value at an index
     SET_KEY = 4  # To set the key (for Insertion Sort)
     SET_PIVOT = 5  # To set the pivot (for Quick Sort)
-    DONE = 6  # To mark the end of the algorithm
+    SET_SWAP = 6  # To set the index of element to be swapped (in Selection Sort)
+    DONE = 7  # To mark the end of the algorithm
 
 
 class Event:
