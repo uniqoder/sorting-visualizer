@@ -9,7 +9,10 @@ class EventType(Enum):
     SET_KEY = 4  # To set the key (for Insertion Sort)
     SET_PIVOT = 5  # To set the pivot (for Quick Sort)
     SET_SWAP = 6  # To set the index of element to be swapped (in Selection Sort)
-    DONE = 7  # To mark the end of the algorithm
+    SPLIT = 7  # To indicate a split at an index (for Merge Sort)
+    MERGE = 8  # To indicate a merge (for Merge Sort)
+    INSERT = 9  # To insert an element from one index to another index
+    DONE = 99  # To mark the end of the algorithm
 
 
 class Event:

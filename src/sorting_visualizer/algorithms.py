@@ -84,32 +84,59 @@ def insertion_sort(
     return lst
 
 
+merge_sort_depth: int = 0  # Counter to manage merge sort depth
+
+
 def merge_sort(
     values: list[int],
     compare: Comparator = ascending,
     onOperation: Callable[[Event], None] | None = None,
 ) -> list[int]:
+    global merge_sort_depth
+    merge_sort_depth += 1
+
     if not onOperation:
         onOperation = lambda e: None
 
+    if len(values) <= 1:
+        return values
+
     def merge(a: list[int], b: list[int]) -> list[int]:
         out: list[int] = []
-        a, b = (a, b) if len(a) < len(b) else (b, a)
+        a_i: int = 0
+        b_i: int = 0
 
-        for i in range(len(a)):
-            if compare(a[i], b[i]):
-                out.append(b[i])
+        while a_i < len(a) and b_i < len(b):
+            onOperation(Event(EventType.COMPARE, a_i, b_i))
+            if compare(a[a_i], b[b_i]):
+                onOperation(Event(EventType.INSERT, b_i, a_i))
+                out.append(b[b_i])
+                b_i += 1
             else:
-                out.append(a[i])
+                onOperation(Event(EventType.INSERT, a_i, b_i))
+                out.append(a[a_i])
+                a_i += 1
 
-        out.append(b[-1])
+        for i in range(a_i, len(a)):
+            onOperation(Event(EventType.INSERT, i, i))
+            out.append(a[i])
+        for i in range(b_i, len(b)):
+            onOperation(Event(EventType.INSERT, i, i))
+            out.append(b[i])
+
         return out
 
     middle: int = len(values) // 2
-    lst = merge(
-        merge_sort(values[:middle], compare, onOperation),
-        merge_sort(values[middle:], compare, onOperation),
-    )
+    onOperation(Event(EventType.SPLIT, middle))
 
-    onOperation(Event(EventType.DONE))
+    left: list[int] = merge_sort(values[:middle], compare, onOperation)
+    right: list[int] = merge_sort(values[middle:], compare, onOperation)
+
+    onOperation(Event(EventType.MERGE))
+    lst: list[int] = merge(left, right)
+
+    merge_sort_depth -= 1
+
+    if merge_sort_depth == 0:
+        onOperation(Event(EventType.DONE))
     return lst
