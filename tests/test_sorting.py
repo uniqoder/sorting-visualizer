@@ -6,14 +6,18 @@ from sorting_visualizer import algorithms as algs
 @pytest.mark.parametrize(("values", "expected"), [([], [])])
 def test_empty_lists(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
 @pytest.mark.parametrize(("values", "expected"), [([42], [42]), ([0], [0])])
 def test_single_element(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
@@ -23,7 +27,9 @@ def test_single_element(values: list[int], expected: list[int]) -> None:
 )
 def test_alread_sorted(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
@@ -33,7 +39,9 @@ def test_alread_sorted(values: list[int], expected: list[int]) -> None:
 )
 def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
@@ -43,7 +51,9 @@ def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
 )
 def test_negative_values(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
@@ -53,7 +63,9 @@ def test_negative_values(values: list[int], expected: list[int]) -> None:
 )
 def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values)
+    assert result == expected
 
+    result = algs.selection_sort(values)
     assert result == expected
 
 
@@ -63,8 +75,12 @@ def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
 )
 def test_non_mutative(values: list[int], expected: list[int]) -> None:
     org: list[int] = values.copy()
-    result: list[int] = algs.bubble_sort(values)
 
+    result: list[int] = algs.bubble_sort(values)
+    assert result == expected
+    assert values == org
+
+    result = algs.selection_sort(values)
     assert result == expected
     assert values == org
 
@@ -81,5 +97,7 @@ def test_non_mutative(values: list[int], expected: list[int]) -> None:
 )
 def test_descending_sort(values: list[int], expected: list[int]) -> None:
     result: list[int] = algs.bubble_sort(values, compare=algs.descending)
+    assert result == expected
 
+    result = algs.selection_sort(values, compare=algs.descending)
     assert result == expected
