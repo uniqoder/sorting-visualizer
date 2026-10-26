@@ -38,7 +38,7 @@ def selection_sort(
     if not onOperation:
         onOperation = lambda e: None
 
-    for i in range(len(lst)):
+    for i in range(len(lst) - 1):
         swp_i: int = i
         for j in range(i + 1, len(lst)):
             onOperation(Event(EventType.COMPARE, swp_i, j))
@@ -48,6 +48,34 @@ def selection_sort(
 
         onOperation(Event(EventType.SWAP, i, swp_i))
         lst[i], lst[swp_i] = lst[swp_i], lst[i]
+
+    onOperation(Event(EventType.DONE))
+    return lst
+
+
+def insertion_sort(
+    values: list[int],
+    compare: Comparator = ascending,
+    onOperation: Callable[[Event], None] | None = None,
+) -> list[int]:
+    lst: list[int] = values.copy()
+
+    if not onOperation:
+        onOperation = lambda e: None
+
+    for i in range(1, len(lst)):
+        onOperation(Event(EventType.SET_KEY, i))
+        key: int = lst[i]
+        j: int = i - 1
+
+        while j >= 0 and compare(lst[j], key):
+            onOperation(Event(EventType.COMPARE, j))
+            lst[j + 1] = lst[j]
+            onOperation(Event(EventType.WRITE, lst[j], j + 1))
+            j -= 1
+
+        onOperation(Event(EventType.WRITE))
+        lst[j + 1] = key
 
     onOperation(Event(EventType.DONE))
     return lst
