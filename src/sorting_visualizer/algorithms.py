@@ -39,8 +39,8 @@ def selection_sort(
         onOperation = lambda e: None
 
     for i in range(len(lst)):
-        swp_i: int = 0
-        for j in range(len(lst)):
+        swp_i: int = i
+        for j in range(i + 1, len(lst)):
             onOperation(Event(EventType.COMPARE, swp_i, j))
             if compare(lst[swp_i], lst[j]):
                 onOperation(Event(EventType.SET_SWAP, j))
