@@ -80,6 +80,6 @@ def test_non_mutative(values: list[int], expected: list[int]) -> None:
     ],
 )
 def test_descending_sort(values: list[int], expected: list[int]) -> None:
-    result: list[int] = algs.bubble_sort(values, ascending=False)
+    result: list[int] = algs.bubble_sort(values, compare=algs.descending)
 
     assert result == expected

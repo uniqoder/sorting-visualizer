@@ -1,19 +1,25 @@
+from collections.abc import Callable
 from types import FunctionType
 
 from .event import Event, EventType
 
+Comparator = Callable[[int, int], bool]
+ascending: Comparator = lambda a, b: a > b
+descending: Comparator = lambda a, b: a < b
+
 
 def bubble_sort(
-    values: list[int], ascending: bool = True, onOperation: FunctionType | None = None
+    values: list[int],
+    compare: Comparator = ascending,
+    onOperation: FunctionType | None = None,
 ) -> list[int]:
     lst: list[int] = values.copy()
-    cmp = (lambda a, b: a > b) if ascending else (lambda a, b: a < b)
 
     for i in range(len(lst)):
         for j in range(len(lst) - i - 1):
             if onOperation:
                 onOperation(Event(EventType.COMPARE, j, j + 1))
-            if cmp(lst[j], lst[j + 1]):
+            if compare(lst[j], lst[j + 1]):
                 if onOperation:
                     onOperation(Event(EventType.SWAP, j, j + 1))
                 lst[j], lst[j + 1] = lst[j + 1], lst[j]
