@@ -17,6 +17,9 @@ def test_empty_lists(values: list[int], expected: list[int]) -> None:
     result = algs.merge_sort(values)
     assert result == expected
 
+    result = algs.quick_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(("values", "expected"), [([42], [42]), ([0], [0])])
 def test_single_element(values: list[int], expected: list[int]) -> None:
@@ -30,6 +33,9 @@ def test_single_element(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.merge_sort(values)
+    assert result == expected
+
+    result = algs.quick_sort(values)
     assert result == expected
 
 
@@ -50,6 +56,9 @@ def test_alread_sorted(values: list[int], expected: list[int]) -> None:
     result = algs.merge_sort(values)
     assert result == expected
 
+    result = algs.quick_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
@@ -66,6 +75,9 @@ def test_reverse_sorted(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.merge_sort(values)
+    assert result == expected
+
+    result = algs.quick_sort(values)
     assert result == expected
 
 
@@ -86,6 +98,9 @@ def test_negative_values(values: list[int], expected: list[int]) -> None:
     result = algs.merge_sort(values)
     assert result == expected
 
+    result = algs.quick_sort(values)
+    assert result == expected
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
@@ -102,6 +117,9 @@ def test_duplicate_elements(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.merge_sort(values)
+    assert result == expected
+
+    result = algs.quick_sort(values)
     assert result == expected
 
 
@@ -128,14 +146,18 @@ def test_non_mutative(values: list[int], expected: list[int]) -> None:
     assert result == expected
     assert values == org
 
+    result = algs.quick_sort(values)
+    assert result == expected
+    assert values == org
+
 
 @pytest.mark.parametrize(
     ("values", "expected"),
     [
+        ([-7, -100, -9, 100, 9], [100, 9, -7, -9, -100]),
         ([1, 2, 3], [3, 2, 1]),
         ([], []),
         ([23], [23]),
-        ([-7, -100, -9, 100, 9], [100, 9, -7, -9, -100]),
         ([6, 6, 2, 5, 2, 4, 5], [6, 6, 5, 5, 4, 2, 2]),
     ],
 )
@@ -150,4 +172,7 @@ def test_descending_sort(values: list[int], expected: list[int]) -> None:
     assert result == expected
 
     result = algs.merge_sort(values, compare=algs.descending)
+    assert result == expected
+
+    result = algs.quick_sort(values, compare=algs.descending)
     assert result == expected
