@@ -3,9 +3,12 @@ from typing import override
 
 
 class EventType(Enum):
-    COMPARE = 1
-    SWAP = 2
-    DONE = 3
+    COMPARE = 1  # To compare two values
+    SWAP = 2  # Two swap values at two indices
+    WRITE = 3  # To write a value at an index
+    SET_KEY = 4  # To set the key (for Insertion Sort)
+    SET_PIVOT = 5  # To set the pivot (for Quick Sort)
+    DONE = 6  # To mark the end of the algorithm
 
 
 class Event:
