@@ -84,22 +84,13 @@ def insertion_sort(
     return lst
 
 
-merge_sort_depth: int = 0  # Counter to manage merge sort depth
-
-
 def merge_sort(
     values: list[int],
     compare: Comparator = ascending,
     onOperation: Callable[[Event], None] | None = None,
 ) -> list[int]:
-    global merge_sort_depth
-    merge_sort_depth += 1
-
     if not onOperation:
         onOperation = lambda e: None
-
-    if len(values) <= 1:
-        return values
 
     def merge(a: list[int], b: list[int]) -> list[int]:
         out: list[int] = []
@@ -126,19 +117,23 @@ def merge_sort(
 
         return out
 
-    middle: int = len(values) // 2
-    onOperation(Event(EventType.SPLIT, middle))
+    def sort_recursive(arr: list[int]) -> list[int]:
+        if len(arr) <= 1:
+            return arr
 
-    left: list[int] = merge_sort(values[:middle], compare, onOperation)
-    right: list[int] = merge_sort(values[middle:], compare, onOperation)
+        middle: int = len(arr) // 2
+        onOperation(Event(EventType.SPLIT, middle))
 
-    onOperation(Event(EventType.MERGE))
-    lst: list[int] = merge(left, right)
+        left: list[int] = sort_recursive(arr[:middle])
+        right: list[int] = sort_recursive(arr[middle:])
 
-    merge_sort_depth -= 1
+        onOperation(Event(EventType.MERGE))
+        lst: list[int] = merge(left, right)
 
-    if merge_sort_depth == 0:
-        onOperation(Event(EventType.DONE))
+        return lst
+
+    lst: list[int] = sort_recursive(values)
+    onOperation(Event(EventType.DONE))
     return lst
 
 
