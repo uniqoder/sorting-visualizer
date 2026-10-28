@@ -16,8 +16,9 @@ def run() -> None:
     clock = pg.time.Clock()
 
     current_theme = theme.Theme()
-    panels: dict[str, pg.Rect] = construct_layout(WIN_SIZE)
-
+    panels: dict[str, tuple[tuple[int, int], pg.Surface]] = construct_layout(
+        WIN_SIZE, current_theme
+    )
     running = True
     while running:
         for event in pg.event.get():
@@ -30,7 +31,9 @@ def run() -> None:
         _ = screen.fill(current_theme.main_background)
 
         for panel in panels.values():
-            _ = pg.draw.rect(screen, current_theme.panel, panel)
+            _ = screen.blit(panel[1], panel[0])
 
         pg.display.flip()
         _ = clock.tick(FPS)
+
+    pg.quit()
