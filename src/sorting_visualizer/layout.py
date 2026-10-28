@@ -1,3 +1,5 @@
+from typing import override
+
 import pygame as pg
 
 from sorting_visualizer.font import Font
@@ -24,177 +26,201 @@ class Style:
         self.border_radius: int = border_radius
 
 
-def construct_layout(
-    win_size: tuple[int, int], theme: Theme
-) -> dict[str, tuple[tuple[int, int], pg.Surface]]:
-    style: Style = Style(
-        theme=theme,
-        font=Font(),
-        margin=12,
-        gap=6,
-        pad=4,
-        border_width=2,
-        border_radius=8,
-    )
+class Panel:
+    def __init__(self, win_size: tuple[int, int], style: Style) -> None:
+        self.win_size: tuple[int, int] = win_size
+        self.style: Style = style
 
-    options_pos, options_panel = construct_options_panel(win_size, style)
-    visual_pos, visual_panel = construct_visual_panel(
-        win_size,
-        style,
-        pg.Rect(*options_pos, *options_panel.get_size()),
-    )
-    details_pos, details_panel = construct_details_panel(
-        win_size,
-        style,
-        pg.Rect(*visual_pos, *visual_panel.get_size()),
-    )
-    stats_pos, stats_panel = construct_stats_panel(
-        win_size,
-        style,
-        pg.Rect(*visual_pos, *visual_panel.get_size()),
-    )
+    def draw(self, _surface: pg.Surface) -> None:
+        raise NotImplementedError
 
-    return {
-        "options": (options_pos, options_panel),
-        "visual": (visual_pos, visual_panel),
-        "details": (details_pos, details_panel),
-        "stats": (stats_pos, stats_panel),
-    }
+    def update(self) -> None:
+        raise NotImplementedError
 
 
-def construct_options_panel(
-    win_size: tuple[int, int], style: Style
-) -> tuple[tuple[int, int], pg.Surface]:
-    bw: int = style.border_width // 2
-    pos: tuple[int, int] = (style.margin, style.margin)
-    panel: pg.Surface = pg.Surface(
-        (round(win_size[0] * 0.2) - style.margin, win_size[1] - 2 * style.margin),
-        pg.SRCALPHA,
-    )
+class OptionsPanel(Panel):
+    def __init__(self, win_size: tuple[int, int], style: Style) -> None:
+        super().__init__(win_size, style)
 
-    title: pg.Surface = style.font.title.render(
-        "Visualizer", True, style.theme.primary_text
-    )
+        self.panel_rect: pg.Rect = pg.Rect(
+            style.margin,
+            style.margin,
+            round(win_size[0] * 0.2) - style.margin,
+            win_size[1] - 2 * style.margin,
+        )
 
-    surf_rect: pg.Rect = pg.Rect(
-        bw, bw, panel.get_width() - bw, panel.get_height() - bw
-    )
-    _ = pg.draw.rect(
-        panel, style.theme.panel, surf_rect, border_radius=style.border_radius
-    )
-    _ = pg.draw.rect(
-        panel,
-        style.theme.border,
-        surf_rect,
-        border_radius=style.border_radius,
-        width=style.border_width,
-    )
+        self.title: pg.Surface = style.font.title.render(
+            "Visualizer", True, style.theme.primary_text
+        )
 
-    _ = panel.blit(title, (pos[0] + style.pad, pos[1] + style.pad))
+    @override
+    def draw(self, _surface: pg.Surface) -> None:
+        bw: int = self.style.border_width // 2
+        rect: pg.Rect = pg.Rect(
+            self.panel_rect.x + bw,
+            self.panel_rect.y + bw,
+            self.panel_rect.width,
+            self.panel_rect.height,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.panel,
+            rect,
+            border_radius=self.style.border_radius,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.border,
+            rect,
+            border_radius=self.style.border_radius,
+            width=self.style.border_width,
+        )
 
-    return (pos, panel)
+        _ = _surface.blit(
+            self.title,
+            (
+                rect.left + self.style.pad,
+                rect.top + self.style.pad,
+            ),
+        )
+
+    @override
+    def update(self) -> None:
+        return super().update()
 
 
-def construct_visual_panel(
-    win_size: tuple[int, int],
-    style: Style,
-    options_pane: pg.Rect,
-) -> tuple[tuple[int, int], pg.Surface]:
-    bw: int = style.border_width // 2
-    pos: tuple[int, int] = (
-        options_pane.x + options_pane.width + style.gap,
-        style.margin,
-    )
-    panel: pg.Surface = pg.Surface(
-        (
+class GraphPanel(Panel):
+    def __init__(
+        self, win_size: tuple[int, int], style: Style, options_panel: pg.Rect
+    ) -> None:
+        super().__init__(win_size, style)
+
+        self.panel_rect: pg.Rect = pg.Rect(
+            options_panel.right + style.gap,
+            style.margin,
             round(win_size[0] * 0.6) - style.margin - style.gap,
             round(win_size[1] * 0.65) - style.margin,
-        ),
-        pg.SRCALPHA,
-    )
+        )
 
-    surf_rect: pg.Rect = pg.Rect(
-        bw, bw, panel.get_width() - bw, panel.get_height() - bw
-    )
-    _ = pg.draw.rect(
-        panel, style.theme.panel, surf_rect, border_radius=style.border_radius
-    )
-    _ = pg.draw.rect(
-        panel,
-        style.theme.border,
-        surf_rect,
-        border_radius=style.border_radius,
-        width=style.border_width,
-    )
+    @override
+    def draw(self, _surface: pg.Surface) -> None:
+        bw: int = self.style.border_width // 2
+        rect: pg.Rect = pg.Rect(
+            self.panel_rect.x + bw,
+            self.panel_rect.y + bw,
+            self.panel_rect.width,
+            self.panel_rect.height,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.panel,
+            rect,
+            border_radius=self.style.border_radius,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.border,
+            rect,
+            border_radius=self.style.border_radius,
+            width=self.style.border_width,
+        )
 
-    return (pos, panel)
+    @override
+    def update(self) -> None:
+        return super().update()
 
 
-def construct_details_panel(
-    win_size: tuple[int, int],
-    style: Style,
-    visual_pane: pg.Rect,
-) -> tuple[tuple[int, int], pg.Surface]:
-    bw: int = style.border_width // 2
-    pos: tuple[int, int] = (
-        visual_pane.x,
-        visual_pane.y + visual_pane.height + style.gap,
-    )
-    panel: pg.Surface = pg.Surface(
-        (
-            visual_pane.width,
+class DetailsPanel(Panel):
+    def __init__(
+        self, win_size: tuple[int, int], style: Style, graph_panel: pg.Rect
+    ) -> None:
+        super().__init__(win_size, style)
+
+        self.panel_rect: pg.Rect = pg.Rect(
+            graph_panel.x,
+            graph_panel.bottom + style.gap,
+            graph_panel.width,
             round(win_size[1] * 0.35) - style.margin - style.gap,
-        ),
-        pg.SRCALPHA,
-    )
+        )
 
-    surf_rect: pg.Rect = pg.Rect(
-        bw, bw, panel.get_width() - bw, panel.get_height() - bw
-    )
-    _ = pg.draw.rect(
-        panel, style.theme.panel, surf_rect, border_radius=style.border_radius
-    )
-    _ = pg.draw.rect(
-        panel,
-        style.theme.border,
-        surf_rect,
-        border_radius=style.border_radius,
-        width=style.border_width,
-    )
+    @override
+    def draw(self, _surface: pg.Surface) -> None:
+        bw: int = self.style.border_width // 2
+        rect: pg.Rect = pg.Rect(
+            self.panel_rect.x + bw,
+            self.panel_rect.y + bw,
+            self.panel_rect.width,
+            self.panel_rect.height,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.panel,
+            rect,
+            border_radius=self.style.border_radius,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.border,
+            rect,
+            border_radius=self.style.border_radius,
+            width=self.style.border_width,
+        )
 
-    return (pos, panel)
+    @override
+    def update(self) -> None:
+        return super().update()
 
 
-def construct_stats_panel(
-    win_size: tuple[int, int],
-    style: Style,
-    visual_pane: pg.Rect,
-) -> tuple[tuple[int, int], pg.Surface]:
-    bw: int = style.border_width // 2
-    pos: tuple[int, int] = (
-        visual_pane.x + visual_pane.width + style.gap,
-        style.margin,
-    )
-    panel: pg.Surface = pg.Surface(
-        (
+class StatsPanel(Panel):
+    def __init__(
+        self, win_size: tuple[int, int], style: Style, graph_panel: pg.Rect
+    ) -> None:
+        super().__init__(win_size, style)
+
+        self.panel_rect: pg.Rect = pg.Rect(
+            graph_panel.right + style.gap,
+            style.margin,
             round(win_size[0] * 0.2) - style.gap,
             win_size[1] - 2 * style.margin,
-        ),
-        pg.SRCALPHA,
-    )
+        )
 
-    surf_rect: pg.Rect = pg.Rect(
-        bw, bw, panel.get_width() - bw, panel.get_height() - bw
-    )
-    _ = pg.draw.rect(
-        panel, style.theme.panel, surf_rect, border_radius=style.border_radius
-    )
-    _ = pg.draw.rect(
-        panel,
-        style.theme.border,
-        surf_rect,
-        border_radius=style.border_radius,
-        width=style.border_width,
-    )
+    @override
+    def draw(self, _surface: pg.Surface) -> None:
+        bw: int = self.style.border_width // 2
+        rect: pg.Rect = pg.Rect(
+            self.panel_rect.x + bw,
+            self.panel_rect.y + bw,
+            self.panel_rect.width,
+            self.panel_rect.height,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.panel,
+            rect,
+            border_radius=self.style.border_radius,
+        )
+        _ = pg.draw.rect(
+            _surface,
+            self.style.theme.border,
+            rect,
+            border_radius=self.style.border_radius,
+            width=self.style.border_width,
+        )
 
-    return (pos, panel)
+    @override
+    def update(self) -> None:
+        return super().update()
+
+
+def construct_layout(win_size: tuple[int, int], style: Style) -> dict[str, Panel]:
+    options_panel: Panel = OptionsPanel(win_size, style)
+    graph_panel: Panel = GraphPanel(win_size, style, options_panel.panel_rect)
+    details_panel: Panel = DetailsPanel(win_size, style, graph_panel.panel_rect)
+    stats_panel: Panel = StatsPanel(win_size, style, graph_panel.panel_rect)
+
+    return {
+        "options": options_panel,
+        "graph": graph_panel,
+        "details": details_panel,
+        "stats": stats_panel,
+    }
