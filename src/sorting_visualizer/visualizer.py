@@ -21,7 +21,7 @@ def run() -> None:
         font=Font(),
         margin=12,
         gap=6,
-        pad=8,
+        pad=16,
         border_width=2,
         border_radius=8,
     )

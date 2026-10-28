@@ -102,6 +102,10 @@ class GraphPanel(Panel):
             round(win_size[1] * 0.65) - style.margin,
         )
 
+        self.algorithm_name: pg.Surface = style.font.heading.render(
+            "Select an Algorithm", True, style.theme.primary_text
+        )
+
     @override
     def draw(self, _surface: pg.Surface) -> None:
         bw: int = self.style.border_width // 2
@@ -125,9 +129,19 @@ class GraphPanel(Panel):
             width=self.style.border_width,
         )
 
+        _ = _surface.blit(
+            self.algorithm_name,
+            (rect.left + 2 * self.style.pad, rect.top + 2 * self.style.pad),
+        )
+
     @override
     def update(self) -> None:
         return super().update()
+
+    def set_algorithm_name(self, name: str) -> None:
+        self.algorithm_name = self.style.font.heading.render(
+            name, True, self.style.theme.primary_text
+        )
 
 
 class DetailsPanel(Panel):
