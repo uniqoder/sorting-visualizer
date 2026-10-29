@@ -1,3 +1,4 @@
+from math import floor
 from typing import override
 
 import pygame as pg
@@ -94,6 +95,7 @@ class GraphPanel(Panel):
         self, win_size: tuple[int, int], style: Style, options_panel: pg.Rect
     ) -> None:
         super().__init__(win_size, style)
+        self.array: list[int] = []
 
         self.panel_rect: pg.Rect = pg.Rect(
             options_panel.right + style.gap,
@@ -101,6 +103,9 @@ class GraphPanel(Panel):
             round(win_size[0] * 0.6) - style.margin - style.gap,
             round(win_size[1] * 0.65) - style.margin,
         )
+
+        self.bar_height: int = round(self.panel_rect.height * 0.7)
+        self.bar_width: int = 10
 
         self.algorithm_name: pg.Surface = style.font.heading.render(
             "Select an Algorithm", True, style.theme.primary_text
@@ -134,6 +139,28 @@ class GraphPanel(Panel):
             (rect.left + 2 * self.style.pad, rect.top + 2 * self.style.pad),
         )
 
+        # Print the bars
+        if len(self.array) == 0:
+            return
+
+        max_val: int = max(self.array)
+        start_x: int = self.panel_rect.left + 2 * self.style.pad
+        for i, val in enumerate(self.array):
+            val_height: int = floor(val / max_val * self.bar_height)
+            bar: pg.Rect = pg.Rect(
+                start_x + (self.bar_width + self.style.gap // 2) * i,
+                self.panel_rect.bottom - val_height,
+                self.bar_width,
+                val_height,
+            )
+            _ = pg.draw.rect(
+                _surface,
+                self.style.theme.bar_default,
+                bar,
+                border_top_left_radius=self.style.border_radius // 4,
+                border_top_right_radius=self.style.border_radius // 4,
+            )
+
     @override
     def update(self) -> None:
         return super().update()
@@ -142,6 +169,16 @@ class GraphPanel(Panel):
         self.algorithm_name = self.style.font.heading.render(
             name, True, self.style.theme.primary_text
         )
+
+    def set_array(self, array: list[int]) -> None:
+        self.array = array
+
+        if len(array) == 0:
+            return
+
+        self.bar_width = (self.panel_rect.width - 2 * self.style.pad) // len(
+            array
+        ) - self.style.gap // 2
 
 
 class DetailsPanel(Panel):
@@ -227,10 +264,10 @@ class StatsPanel(Panel):
 
 
 def construct_layout(win_size: tuple[int, int], style: Style) -> dict[str, Panel]:
-    options_panel: Panel = OptionsPanel(win_size, style)
-    graph_panel: Panel = GraphPanel(win_size, style, options_panel.panel_rect)
-    details_panel: Panel = DetailsPanel(win_size, style, graph_panel.panel_rect)
-    stats_panel: Panel = StatsPanel(win_size, style, graph_panel.panel_rect)
+    options_panel = OptionsPanel(win_size, style)
+    graph_panel = GraphPanel(win_size, style, options_panel.panel_rect)
+    details_panel = DetailsPanel(win_size, style, graph_panel.panel_rect)
+    stats_panel = StatsPanel(win_size, style, graph_panel.panel_rect)
 
     return {
         "options": options_panel,

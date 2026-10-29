@@ -1,23 +1,44 @@
+from typing import cast
+
 import pygame as pg
+from pygame.time import Clock
 
-from sorting_visualizer.font import Font
-from sorting_visualizer.layout import Panel, Style, construct_layout
-
-from . import theme
+from .font import Font
+from .layout import (
+    DetailsPanel,
+    GraphPanel,
+    OptionsPanel,
+    Panel,
+    StatsPanel,
+    Style,
+    construct_layout,
+)
+from .theme import Theme
 
 WIN_SIZE = WIN_WIDTH, WIN_HEIGHT = 1280, 800
 FPS = 60
 
+screen: pg.Surface
+clock: Clock
+style: Style
+optionsPanel: OptionsPanel
+graphPanel: GraphPanel
+detailsPanel: DetailsPanel
+statsPanel: StatsPanel
+events: list[str] = []
 
-def run() -> None:
+
+def init() -> None:
+    global screen, clock, style, optionsPanel, graphPanel, detailsPanel, statsPanel
+
     _ = pg.init()
     pg.display.set_caption("Sorting Algorithm Visualizer")
 
-    screen: pg.Surface = pg.display.set_mode(WIN_SIZE)
-    clock = pg.time.Clock()
+    screen = pg.display.set_mode(WIN_SIZE)
+    clock = Clock()
 
-    style: Style = Style(
-        theme=theme.Theme(),
+    style = Style(
+        theme=Theme(),
         font=Font(),
         margin=12,
         gap=6,
@@ -25,23 +46,30 @@ def run() -> None:
         border_width=2,
         border_radius=8,
     )
+
     panels: dict[str, Panel] = construct_layout(WIN_SIZE, style)
+    optionsPanel = cast(OptionsPanel, panels.get("options"))
+    graphPanel = cast(GraphPanel, panels.get("graph"))
+    detailsPanel = cast(DetailsPanel, panels.get("details"))
+    statsPanel = cast(StatsPanel, panels.get("stats"))
 
-    running = True
-    while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
 
-        # Update
+def update() -> None:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            pg.quit()
+            events.append("quit")
+            return
 
-        # Draw
-        _ = screen.fill(style.theme.main_background)
+    # Update
 
-        for panel in panels.values():
-            panel.draw(screen)
+    # Draw
+    _ = screen.fill(style.theme.main_background)
 
-        pg.display.flip()
-        _ = clock.tick(FPS)
+    optionsPanel.draw(screen)
+    graphPanel.draw(screen)
+    detailsPanel.draw(screen)
+    statsPanel.draw(screen)
 
-    pg.quit()
+    pg.display.flip()
+    _ = clock.tick(FPS)

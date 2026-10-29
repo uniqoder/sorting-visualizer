@@ -170,7 +170,6 @@ def quick_sort(
 
         pivot_idx: int = partition(arr, low, high)
         onOperation(Event(EventType.SET_PIVOT, pivot_idx))
-        print(arr[low:pivot_idx], [arr[pivot_idx]], arr[pivot_idx + 1 : high + 1])
 
         onOperation(Event(EventType.SPLIT, pivot_idx))
         sort_recursive(arr, low, pivot_idx - 1)
