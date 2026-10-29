@@ -13,7 +13,7 @@ from .layout import (
     Style,
     construct_layout,
 )
-from .theme import Theme
+from .theme import MIDNIGHT_INDIGO, Theme
 
 WIN_SIZE = WIN_WIDTH, WIN_HEIGHT = 1280, 800
 FPS = 60
@@ -38,7 +38,7 @@ def init() -> None:
     clock = Clock()
 
     style = Style(
-        theme=Theme(),
+        theme=Theme(MIDNIGHT_INDIGO),
         font=Font(),
         margin=12,
         gap=6,
@@ -62,6 +62,7 @@ def update() -> None:
             return
 
     # Update
+    graphPanel.update()
 
     # Draw
     _ = screen.fill(style.theme.main_background)

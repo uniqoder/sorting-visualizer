@@ -3,6 +3,7 @@ from typing import override
 
 import pygame as pg
 
+from sorting_visualizer.event import Event, EventType
 from sorting_visualizer.font import Font
 from sorting_visualizer.theme import Theme
 
@@ -97,6 +98,12 @@ class GraphPanel(Panel):
         super().__init__(win_size, style)
         self.array: list[int] = []
 
+        self.comparing: tuple[int, int] = (-1, -1)
+        self.swapping: tuple[int, int] = (-1, -1)
+        self.pivot_idx: int = -1
+        self.done: bool = False
+        self.sorted_count: int = 0
+
         self.panel_rect: pg.Rect = pg.Rect(
             options_panel.right + style.gap,
             style.margin,
@@ -146,6 +153,17 @@ class GraphPanel(Panel):
         max_val: int = max(self.array)
         start_x: int = self.panel_rect.left + 2 * self.style.pad
         for i, val in enumerate(self.array):
+            color: str = self.style.theme.bar_default
+            if not self.done:
+                if i in self.comparing:
+                    color = self.style.theme.bar_compare
+                elif i in self.swapping:
+                    color = self.style.theme.bar_swap
+                if i == self.pivot_idx:
+                    color = self.style.theme.bar_pivot
+            if i < self.sorted_count:
+                color = self.style.theme.bar_sorted
+
             val_height: int = floor(val / max_val * self.bar_height)
             bar: pg.Rect = pg.Rect(
                 start_x + (self.bar_width + self.style.gap // 2) * i,
@@ -155,7 +173,7 @@ class GraphPanel(Panel):
             )
             _ = pg.draw.rect(
                 _surface,
-                self.style.theme.bar_default,
+                color,
                 bar,
                 border_top_left_radius=self.style.border_radius // 4,
                 border_top_right_radius=self.style.border_radius // 4,
@@ -163,7 +181,8 @@ class GraphPanel(Panel):
 
     @override
     def update(self) -> None:
-        return super().update()
+        if self.done:
+            self.sorted_count += 1
 
     def set_algorithm_name(self, name: str) -> None:
         self.algorithm_name = self.style.font.heading.render(
@@ -179,6 +198,16 @@ class GraphPanel(Panel):
         self.bar_width = (self.panel_rect.width - 2 * self.style.pad) // len(
             array
         ) - self.style.gap // 2
+
+    def handle_event(self, event: Event) -> None:
+        if event.type == EventType.COMPARE:
+            self.comparing = (event.args[0], event.args[1])
+        elif event.type == EventType.SWAP:
+            self.swapping = (event.args[0], event.args[1])
+        elif event.type == EventType.SET_PIVOT:
+            self.pivot_idx = event.args[0]
+        elif event.type == EventType.DONE:
+            self.done = True
 
 
 class DetailsPanel(Panel):

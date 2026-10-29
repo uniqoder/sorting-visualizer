@@ -10,7 +10,7 @@ def main() -> None:
     viz.init()
 
     sort_events: list[Event] = []
-    array: list[int] = [randrange(1, 1001) for _ in range(50)]
+    array: list[int] = [randrange(1, 1001) for _ in range(100)]
     shuffle(array)
     viz.graphPanel.set_array(array)
     viz.update()
@@ -28,7 +28,10 @@ def main() -> None:
         if len(sort_events) > 0:
             ev: Event = sort_events.pop(0)
             if ev.type == EventType.SWAP:
-                array[ev.args[0]], array[ev.args[1]] = (
-                    array[ev.args[1]],
-                    array[ev.args[0]],
+                i, j = ev.args
+                array[i], array[j] = (
+                    array[j],
+                    array[i],
                 )
+
+            viz.graphPanel.handle_event(ev)
