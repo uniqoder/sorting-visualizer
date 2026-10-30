@@ -5,16 +5,36 @@ from sorting_visualizer.event import Event, EventType
 from . import algorithms as algs
 from . import visualizer as viz
 
+array: list[int] = []
+sorting_func: str = "merge"
+
 
 def main() -> None:
+    global array
+
     viz.init()
 
-    sort_events: list[Event] = []
-    array: list[int] = [randrange(1, 100) for _ in range(50)]
+    array = [randrange(1, 100) for _ in range(50)]
     viz.graphPanel.set_array(array)
+    viz.graphPanel.set_algorithm_name(sorting_func.capitalize() + " Sort")
     viz.update()
 
-    _sorter = algs.merge_sort(array, onOperation=lambda e: sort_events.append(e))
+    run_sorter()
+
+
+def run_sorter() -> None:
+    sort_events: list[Event] = []
+
+    if sorting_func == "bubble":
+        _ = algs.bubble_sort(array, onOperation=lambda e: sort_events.append(e))
+    elif sorting_func == "insertion":
+        _ = algs.insertion_sort(array, onOperation=lambda e: sort_events.append(e))
+    elif sorting_func == "selection":
+        _ = algs.selection_sort(array, onOperation=lambda e: sort_events.append(e))
+    elif sorting_func == "merge":
+        _ = algs.merge_sort(array, onOperation=lambda e: sort_events.append(e))
+    else:
+        _ = algs.quick_sort(array, onOperation=lambda e: sort_events.append(e))
 
     running: int = 1
     while running:
