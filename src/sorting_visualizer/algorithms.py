@@ -92,43 +92,56 @@ def merge_sort(
     if not onOperation:
         onOperation = lambda e: None
 
-    def merge(a: list[int], b: list[int]) -> list[int]:
+    def merge(
+        left: list[int], right: list[int], start_left: int = 0, start_right: int = 0
+    ) -> list[int]:
         out: list[int] = []
-        a_i: int = 0
-        b_i: int = 0
+        left_i: int = 0
+        right_i: int = 0
 
-        while a_i < len(a) and b_i < len(b):
-            onOperation(Event(EventType.COMPARE, a_i, b_i))
-            if compare(a[a_i], b[b_i]):
-                onOperation(Event(EventType.INSERT, b_i, a_i))
-                out.append(b[b_i])
-                b_i += 1
+        while left_i < len(left) and right_i < len(right):
+            onOperation(
+                Event(EventType.COMPARE, start_left + left_i, start_right + right_i)
+            )
+            if compare(left[left_i], right[right_i]):
+                onOperation(
+                    Event(EventType.INSERT, start_left + len(out), right[right_i])
+                )
+                out.append(right[right_i])
+                right_i += 1
             else:
-                onOperation(Event(EventType.INSERT, a_i, b_i))
-                out.append(a[a_i])
-                a_i += 1
+                onOperation(
+                    Event(EventType.INSERT, start_left + len(out), left[left_i])
+                )
+                out.append(left[left_i])
+                left_i += 1
 
-        for i in range(a_i, len(a)):
-            onOperation(Event(EventType.INSERT, i, i))
-            out.append(a[i])
-        for i in range(b_i, len(b)):
-            onOperation(Event(EventType.INSERT, i, i))
-            out.append(b[i])
+        while left_i < len(left):
+            onOperation(Event(EventType.INSERT, start_left + len(out), left[left_i]))
+            out.append(left[left_i])
+            left_i += 1
+
+        while right_i < len(right):
+            onOperation(Event(EventType.INSERT, start_left + len(out), right[right_i]))
+            out.append(right[right_i])
+            right_i += 1
 
         return out
 
-    def sort_recursive(arr: list[int]) -> list[int]:
+    def sort_recursive(arr: list[int], start: int = 0) -> list[int]:
         if len(arr) <= 1:
             return arr
 
         middle: int = len(arr) // 2
-        onOperation(Event(EventType.SPLIT, middle))
+        onOperation(Event(EventType.SPLIT, start + middle))
 
-        left: list[int] = sort_recursive(arr[:middle])
-        right: list[int] = sort_recursive(arr[middle:])
+        left: list[int] = sort_recursive(arr[:middle], start=start)
+        right: list[int] = sort_recursive(arr[middle:], start=start + middle)
 
-        onOperation(Event(EventType.MERGE))
-        lst: list[int] = merge(left, right)
+        onOperation(Event(EventType.MERGE, start + middle))
+        lst: list[int] = merge(
+            left, right, start_left=start, start_right=start + middle
+        )
 
         return lst
 
@@ -171,7 +184,6 @@ def quick_sort(
         pivot_idx: int = partition(arr, low, high)
         onOperation(Event(EventType.SET_PIVOT, pivot_idx))
 
-        onOperation(Event(EventType.SPLIT, pivot_idx))
         sort_recursive(arr, low, pivot_idx - 1)
         sort_recursive(arr, pivot_idx + 1, high)
 

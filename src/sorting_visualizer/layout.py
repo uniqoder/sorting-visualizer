@@ -100,6 +100,7 @@ class GraphPanel(Panel):
 
         self.comparing: tuple[int, int] = (-1, -1)
         self.swapping: tuple[int, int] = (-1, -1)
+        self.splits: list[int] = []
         self.pivot_idx: int = -1
         self.done: bool = False
         self.sorted_count: int = 0
@@ -153,18 +154,9 @@ class GraphPanel(Panel):
         max_val: int = max(self.array)
         start_x: int = self.panel_rect.left + 2 * self.style.pad
         for i, val in enumerate(self.array):
-            color: str = self.style.theme.bar_default
-            if not self.done:
-                if i in self.comparing:
-                    color = self.style.theme.bar_compare
-                elif i in self.swapping:
-                    color = self.style.theme.bar_swap
-                if i == self.pivot_idx:
-                    color = self.style.theme.bar_pivot
-            if i < self.sorted_count:
-                color = self.style.theme.bar_sorted
-
             val_height: int = floor(val / max_val * self.bar_height)
+            color: str = self.__get_color(i)
+
             bar: pg.Rect = pg.Rect(
                 start_x + (self.bar_width + self.style.gap // 2) * i,
                 self.panel_rect.bottom - val_height,
@@ -200,6 +192,8 @@ class GraphPanel(Panel):
         ) - self.style.gap // 2
 
     def handle_event(self, event: Event) -> None:
+        self.comparing = (-1, -1)
+        self.swapping = (-1, -1)
         if event.type == EventType.COMPARE:
             self.comparing = (event.args[0], event.args[1])
         elif event.type == EventType.SWAP:
@@ -208,6 +202,28 @@ class GraphPanel(Panel):
             self.pivot_idx = event.args[0]
         elif event.type == EventType.DONE:
             self.done = True
+        elif event.type == EventType.SPLIT:
+            self.splits.append(event.args[0])
+        elif event.type == EventType.MERGE and event.args[0] in self.splits:
+            self.splits.remove(event.args[0])
+
+    def __get_color(self, idx: int) -> str:
+        color: str = self.style.theme.bar_default
+
+        if idx in self.splits:
+            color = self.style.theme.bar_pivot
+
+        if not self.done:
+            if idx in self.comparing:
+                color = self.style.theme.bar_compare
+            elif idx in self.swapping:
+                color = self.style.theme.bar_swap
+            if idx == self.pivot_idx:
+                color = self.style.theme.bar_pivot
+        if idx < self.sorted_count:
+            color = self.style.theme.bar_sorted
+
+        return color
 
 
 class DetailsPanel(Panel):

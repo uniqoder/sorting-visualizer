@@ -1,4 +1,4 @@
-from random import randrange, shuffle
+from random import randrange
 
 from sorting_visualizer.event import Event, EventType
 
@@ -10,12 +10,11 @@ def main() -> None:
     viz.init()
 
     sort_events: list[Event] = []
-    array: list[int] = [randrange(1, 1001) for _ in range(100)]
-    shuffle(array)
+    array: list[int] = [randrange(1, 100) for _ in range(50)]
     viz.graphPanel.set_array(array)
     viz.update()
 
-    _sorter = algs.quick_sort(array, onOperation=lambda e: sort_events.append(e))
+    _sorter = algs.merge_sort(array, onOperation=lambda e: sort_events.append(e))
 
     running: int = 1
     while running:
@@ -33,5 +32,8 @@ def main() -> None:
                     array[j],
                     array[i],
                 )
+            elif ev.type == EventType.INSERT:
+                i, val = ev.args
+                array[i] = val
 
             viz.graphPanel.handle_event(ev)
