@@ -34,3 +34,6 @@ class Panel:
 
     def update(self) -> None:
         raise NotImplementedError
+
+    def handle_event(self, _event: pg.event.Event) -> None:
+        raise NotImplementedError

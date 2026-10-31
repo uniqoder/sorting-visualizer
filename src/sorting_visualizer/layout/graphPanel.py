@@ -4,7 +4,8 @@ from typing import override
 import pygame as pg
 
 from sorting_visualizer.event import Event, EventType
-from sorting_visualizer.layout.panel import Panel, Style
+
+from .panel import Panel, Style
 
 
 class GraphPanel(Panel):
@@ -89,7 +90,7 @@ class GraphPanel(Panel):
 
     @override
     def update(self) -> None:
-        if self.done:
+        if self.done and self.sorted_count < len(self.array):
             self.sorted_count += 1
 
     def set_algorithm_name(self, name: str) -> None:
@@ -107,7 +108,7 @@ class GraphPanel(Panel):
             array
         ) - self.style.gap // 2
 
-    def handle_event(self, event: Event) -> None:
+    def handle_sort_event(self, event: Event) -> None:
         self.comparing = (-1, -1)
         self.swapping = (-1, -1)
         if event.type == EventType.COMPARE:

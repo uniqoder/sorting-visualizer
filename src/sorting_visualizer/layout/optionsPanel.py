@@ -2,7 +2,9 @@ from typing import override
 
 import pygame as pg
 
-from sorting_visualizer.layout.panel import Panel, Style
+from .. import ui
+from ..ui.button import Button
+from .panel import Panel, Style
 
 
 class OptionsPanel(Panel):
@@ -18,6 +20,30 @@ class OptionsPanel(Panel):
 
         self.title: pg.Surface = style.font.title.render(
             "Visualizer", True, style.theme.primary_text
+        )
+
+        width: int = round(0.6 * self.panel_rect.width)
+        height: int = round(0.06 * self.panel_rect.height)
+        y: int = round(0.7 * self.panel_rect.height)
+        x: int = self.panel_rect.centerx - width // 2
+
+        self.runButton: Button = Button(
+            "Run",
+            pg.Rect(
+                x,
+                y,
+                width,
+                height,
+            ),
+            lambda: None,
+            style=ui.Style(
+                style.font,
+                bg_color=style.theme.primary_accent,
+                fg_color=style.theme.primary_text,
+                border_color=style.theme.border,
+                border_width=2,
+                border_radius=12,
+            ),
         )
 
     @override
@@ -51,6 +77,8 @@ class OptionsPanel(Panel):
             ),
         )
 
+        self.runButton.draw(_surface)
+
     @override
-    def update(self) -> None:
-        return super().update()
+    def handle_event(self, _event: pg.event.Event) -> None:
+        self.runButton.handle_event(_event)

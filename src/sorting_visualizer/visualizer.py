@@ -3,11 +3,10 @@ from typing import cast
 import pygame as pg
 from pygame.time import Clock
 
-from sorting_visualizer.layout import construct_layout
+from sorting_visualizer.layout import Panel, Style, construct_layout
 from sorting_visualizer.layout.detailsPanel import DetailsPanel
 from sorting_visualizer.layout.graphPanel import GraphPanel
 from sorting_visualizer.layout.optionsPanel import OptionsPanel
-from sorting_visualizer.layout.panel import Panel, Style
 from sorting_visualizer.layout.statsPanel import StatsPanel
 
 from .font import Font
@@ -58,6 +57,7 @@ def update() -> None:
             pg.quit()
             events.append("quit")
             return
+        optionsPanel.handle_event(event)
 
     # Update
     graphPanel.update()

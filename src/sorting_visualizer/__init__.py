@@ -7,6 +7,12 @@ from . import visualizer as viz
 
 array: list[int] = []
 sorting_func: str = "merge"
+sorting: bool = False
+
+
+def set_sorting() -> None:
+    global sorting
+    sorting = True
 
 
 def main() -> None:
@@ -18,6 +24,8 @@ def main() -> None:
     viz.graphPanel.set_array(array)
     viz.graphPanel.set_algorithm_name(sorting_func.capitalize() + " Sort")
     viz.update()
+
+    viz.optionsPanel.runButton.onClick = lambda: set_sorting()
 
     run_sorter()
 
@@ -44,6 +52,9 @@ def run_sorter() -> None:
             if event == "quit":
                 running = 0
 
+        if not sorting:
+            continue
+
         if len(sort_events) > 0:
             ev: Event = sort_events.pop(0)
             if ev.type == EventType.SWAP:
@@ -56,4 +67,4 @@ def run_sorter() -> None:
                 i, val = ev.args
                 array[i] = val
 
-            viz.graphPanel.handle_event(ev)
+            viz.graphPanel.handle_sort_event(ev)

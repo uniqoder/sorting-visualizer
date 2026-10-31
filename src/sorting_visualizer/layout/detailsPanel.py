@@ -2,7 +2,7 @@ from typing import override
 
 import pygame as pg
 
-from sorting_visualizer.layout.panel import Panel, Style
+from .panel import Panel, Style
 
 
 class DetailsPanel(Panel):
@@ -40,7 +40,3 @@ class DetailsPanel(Panel):
             border_radius=self.style.border_radius,
             width=self.style.border_width,
         )
-
-    @override
-    def update(self) -> None:
-        return super().update()
