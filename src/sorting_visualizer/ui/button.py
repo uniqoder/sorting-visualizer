@@ -2,7 +2,6 @@ from collections.abc import Callable
 from typing import override
 
 import pygame as pg
-from pygame.event import Event
 
 from . import UI, Alignment, Style
 
