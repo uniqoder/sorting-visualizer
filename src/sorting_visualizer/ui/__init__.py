@@ -1,5 +1,5 @@
 from enum import Enum
-from gc import disable
+from typing import ClassVar, Self
 
 from pygame import Rect
 from pygame.event import Event
@@ -52,5 +52,5 @@ class UI:
     def draw(self, _surface: Surface) -> None:
         raise NotImplementedError
 
-    def handle_event(self, _event: Event) -> None:
+    def update(self) -> None:
         raise NotImplementedError

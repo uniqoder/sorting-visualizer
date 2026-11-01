@@ -41,6 +41,8 @@ class OptionsPanel(Panel):
                 bg_color=style.theme.primary_accent,
                 fg_color=style.theme.primary_text,
                 border_color=style.theme.border,
+                hover_color=style.theme.secondary_accent,
+                active_color=style.theme.panel,
                 border_width=2,
                 border_radius=12,
             ),
@@ -80,5 +82,5 @@ class OptionsPanel(Panel):
         self.runButton.draw(_surface)
 
     @override
-    def handle_event(self, _event: pg.event.Event) -> None:
-        self.runButton.handle_event(_event)
+    def update(self) -> None:
+        self.runButton.update()

@@ -22,6 +22,11 @@ class Button(UI):
 
         self.text_surf: pg.Surface = style.font.label.render(text, True, style.fg_color)
 
+        # Settings
+        self.hovered: bool = False
+        self.pressed: bool = False
+        self.enabled: bool = True
+
     @override
     def draw(self, _surface: pg.Surface) -> None:
         rect: pg.Rect = self.rect
@@ -43,8 +48,16 @@ class Button(UI):
             text_rect.center = self.rect.center
 
         # Draw background and border
+        bg_color: str = self.style.bg_color
+        if self.hovered:
+            bg_color = self.style.hover_color
+        if self.pressed:
+            bg_color = self.style.active_color
+        if not self.enabled:
+            bg_color = self.style.disabled_color
+
         _ = pg.draw.rect(
-            _surface, self.style.bg_color, rect, border_radius=self.style.border_radius
+            _surface, bg_color, rect, border_radius=self.style.border_radius
         )
         _ = pg.draw.rect(
             _surface,
@@ -58,7 +71,7 @@ class Button(UI):
         _ = _surface.blit(self.text_surf, text_rect)
 
     @override
-    def handle_event(self, _event: Event) -> None:
+    def update(self) -> None:
         rect: pg.Rect = self.rect
 
         # Add padding
@@ -68,9 +81,16 @@ class Button(UI):
         rect.height += 2 * self.style.padding
         rect.y -= self.style.padding
 
-        if (
-            _event.type == pg.MOUSEBUTTONDOWN
-            and _event.button == 1
-            and rect.collidepoint(_event.pos)
-        ):
-            self.onClick()
+        pressed: tuple[bool, bool, bool] = pg.mouse.get_pressed(3)
+        pos: tuple[int, int] = pg.mouse.get_pos()
+
+        # Click
+        if pressed[0]:
+            if rect.collidepoint(pos):
+                self.pressed = True
+                self.onClick()
+        else:
+            self.pressed = False
+
+        # Hover
+        self.hovered = rect.collidepoint(pos)

@@ -57,10 +57,10 @@ def update() -> None:
             pg.quit()
             events.append("quit")
             return
-        optionsPanel.handle_event(event)
 
     # Update
     graphPanel.update()
+    optionsPanel.update()
 
     # Draw
     _ = screen.fill(style.theme.main_background)
