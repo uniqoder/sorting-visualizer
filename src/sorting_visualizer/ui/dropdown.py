@@ -99,18 +99,14 @@ class Dropdown(UI):
                 continue
 
             op += 1
-            opRect: pg.Rect = pg.Rect(
-                rect.x, rect.y + op * rect.height, rect.width, rect.height
-            )
-            txtRect: pg.Rect = pg.Rect(
-                text_rects[i].x,
-                text_rects[i].y + op * rect.height,
-                text_rects[i].width,
-                text_rects[i].height,
-            )
+            opRect: pg.Rect = rect.copy()
+            opRect.y += op * rect.height
+
+            txtRect: pg.Rect = text_rects[i].copy()
+            txtRect.y += op * rect.height
 
             rad: int = 0
-            if i == len(text_rects) - 1 or i + 1 == self.selected:
+            if i == len(text_rects) - 1:
                 rad = self.style.border_radius
 
             _ = pg.draw.rect(
@@ -150,6 +146,22 @@ class Dropdown(UI):
                 self.pressed = True
                 self.open = not self.open
             else:
+                menuRect: pg.Rect = rect.copy()
+                menuRect.y += menuRect.height
+                menuRect.height *= len(self.options) - 1
+
+                if self.open and menuRect.collidepoint(pos):
+                    delta: int = pos[1] - menuRect.top
+                    idx: int = max(0, min(delta // rect.height, len(self.options) - 1))
+                    if idx >= self.selected:
+                        idx += 1  # Selected option skipping offset
+
+                    option: str = self.options[idx]
+                    print(f"[?] Dropdown option pressed: {delta=}, {idx=}, {option=}")
+
+                    self.selected = idx
+                    self.onClick(option)
+
                 self.open = False
         elif not pressed[0]:
             self.pressed = False
