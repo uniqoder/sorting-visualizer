@@ -51,11 +51,16 @@ class OptionsPanel(Panel):
         # Sorting algorithm dropdown
         y = round(0.3 * self.panel_rect.height)
 
+        uiTransStyle: ui.Style = uiStyle.copy()
+        uiTransStyle.bg_color = style.theme.panel
+        uiTransStyle.hover_color = uiTransStyle.bg_color
+        uiTransStyle.active_color = style.theme.secondary_accent
+
         self.algorithmDropdown: Dropdown = Dropdown(
             ["Bubble", "Selection", "Insertion", "Merge", "Quick"],
             pg.Rect(x, y, width, height),
             lambda op: None,
-            style=uiStyle,
+            style=uiTransStyle,
         )
 
     @override

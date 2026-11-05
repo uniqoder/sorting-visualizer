@@ -1,8 +1,7 @@
 from enum import Enum
-from typing import ClassVar, Self
+from typing import Self
 
 from pygame import Rect
-from pygame.event import Event
 from pygame.surface import Surface
 
 from sorting_visualizer.font import Font
@@ -42,6 +41,22 @@ class Style:
         self.hover_color: str = hover_color
         self.active_color: str = active_color
         self.disabled_color: str = disabled_color
+
+    def copy(self):
+        return Style(
+            self.font,
+            self.bg_color,
+            self.fg_color,
+            self.padding,
+            self.margin,
+            self.alignment,
+            self.border_width,
+            self.border_color,
+            self.border_radius,
+            self.hover_color,
+            self.active_color,
+            self.disabled_color,
+        )
 
 
 class UI:

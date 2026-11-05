@@ -168,3 +168,7 @@ class Dropdown(UI):
 
         # Hover
         self.hovered = rect.collidepoint(pos)
+
+    def getOption(self) -> str:
+        self.selected = max(0, min(self.selected, len(self.options) - 1))
+        return self.options[self.selected]

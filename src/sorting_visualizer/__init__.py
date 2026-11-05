@@ -8,6 +8,7 @@ from . import visualizer as viz
 array: list[int] = []
 sorting_func: str = "merge"
 sorting: bool = False
+sort_events: list[Event] = []
 
 
 def set_sorting() -> None:
@@ -15,24 +16,12 @@ def set_sorting() -> None:
     sorting = True
 
 
-def main() -> None:
-    global array
+def set_algorithm_name(alg: str) -> None:
+    global sorting_func
+    sorting_func = alg.lower()
+    viz.graphPanel.set_algorithm_name(alg.capitalize() + " Sort")
 
-    viz.init()
-
-    array = [randrange(1, 100) for _ in range(50)]
-    viz.graphPanel.set_array(array)
-    viz.graphPanel.set_algorithm_name(sorting_func.capitalize() + " Sort")
-    viz.update()
-
-    viz.optionsPanel.runButton.onClick = lambda: set_sorting()
-
-    run_sorter()
-
-
-def run_sorter() -> None:
-    sort_events: list[Event] = []
-
+    sort_events.clear()
     if sorting_func == "bubble":
         _ = algs.bubble_sort(array, onOperation=lambda e: sort_events.append(e))
     elif sorting_func == "insertion":
@@ -44,7 +33,25 @@ def run_sorter() -> None:
     else:
         _ = algs.quick_sort(array, onOperation=lambda e: sort_events.append(e))
 
+
+def main() -> None:
+    global array
+
+    viz.init()
+
+    array = [randrange(1, 100) for _ in range(50)]
+    viz.graphPanel.set_array(array)
+
+    viz.optionsPanel.runButton.onClick = lambda: set_sorting()
+    viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm_name(alg)
+
+    set_algorithm_name(viz.optionsPanel.algorithmDropdown.getOption())
+    run_sorter()
+
+
+def run_sorter() -> None:
     running: int = 1
+
     while running:
         viz.update()
 
