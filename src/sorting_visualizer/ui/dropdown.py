@@ -22,7 +22,7 @@ class Dropdown(UI):
         self.onClick: Callable[[str], None] = onClick
 
         self.text_surfs: list[pg.Surface] = [
-            style.font.label.render(txt, True, style.fg_color) for txt in options
+            style.font.render(txt, True, style.fg_color) for txt in options
         ]
 
         # Settings

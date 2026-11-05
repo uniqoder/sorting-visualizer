@@ -19,7 +19,7 @@ class Button(UI):
         self.text: str = text
         self.onClick: Callable[[], None] = onClick
 
-        self.text_surf: pg.Surface = style.font.label.render(text, True, style.fg_color)
+        self.text_surf: pg.Surface = style.font.render(text, True, style.fg_color)
 
         # Settings
         self.hovered: bool = False

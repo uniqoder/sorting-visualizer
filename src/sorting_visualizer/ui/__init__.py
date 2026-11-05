@@ -1,10 +1,8 @@
 from enum import Enum
-from typing import Self
 
 from pygame import Rect
+from pygame.font import Font
 from pygame.surface import Surface
-
-from sorting_visualizer.font import Font
 
 
 class Alignment(Enum):

@@ -14,9 +14,10 @@ sort_events: list[Event] = []
 def set_sorting() -> None:
     global sorting
     sorting = True
+    set_algorithm(sorting_func)
 
 
-def set_algorithm_name(alg: str) -> None:
+def set_algorithm(alg: str) -> None:
     global sorting_func
     sorting_func = alg.lower()
     viz.graphPanel.set_algorithm_name(alg.capitalize() + " Sort")
@@ -34,18 +35,24 @@ def set_algorithm_name(alg: str) -> None:
         _ = algs.quick_sort(array, onOperation=lambda e: sort_events.append(e))
 
 
-def main() -> None:
-    global array
+def set_size(size: int) -> None:
+    global array, sorting
+    array = [randrange(1, 100) for _ in range(size)]
+    viz.graphPanel.set_array(array)
+    viz.graphPanel.done = False
+    sorting = False
+    viz.graphPanel.sorted_count = 0
 
+
+def main() -> None:
     viz.init()
 
-    array = [randrange(1, 100) for _ in range(50)]
-    viz.graphPanel.set_array(array)
-
     viz.optionsPanel.runButton.onClick = lambda: set_sorting()
-    viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm_name(alg)
+    viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm(alg)
+    viz.optionsPanel.sizeDropdown.onClick = lambda size: set_size(int(size))
 
-    set_algorithm_name(viz.optionsPanel.algorithmDropdown.getOption())
+    set_algorithm(viz.optionsPanel.algorithmDropdown.getOption())
+    set_size(int(viz.optionsPanel.sizeDropdown.getOption()))
     run_sorter()
 
 
