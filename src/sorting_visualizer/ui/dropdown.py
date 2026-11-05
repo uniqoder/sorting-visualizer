@@ -31,6 +31,9 @@ class Dropdown(UI):
         self.enabled: bool = True
         self.open: bool = False
 
+        self.mouseDown: bool = True
+        self.optPressed: int = -1
+
     @override
     def draw(self, _surface: pg.Surface) -> None:
         rect: pg.Rect = self.rect
@@ -111,7 +114,9 @@ class Dropdown(UI):
 
             _ = pg.draw.rect(
                 _surface,
-                self.style.bg_color,
+                self.style.bg_color
+                if i != self.optPressed
+                else self.style.active_color,
                 opRect,
                 border_bottom_left_radius=rad,
                 border_bottom_right_radius=rad,
@@ -140,35 +145,45 @@ class Dropdown(UI):
         pressed: tuple[bool, bool, bool] = pg.mouse.get_pressed(3)
         pos: tuple[int, int] = pg.mouse.get_pos()
 
+        menuRect: pg.Rect = rect.copy()
+        menuRect.y += menuRect.height
+        menuRect.height *= len(self.options) - 1
+        idx: int = limit(
+            (pos[1] - menuRect.top) // rect.height, 0, len(self.options) - 1
+        )
+        if idx >= self.selected:
+            idx += 1  # Selected option skipping offset
+
         # Click
-        if pressed[0] and not self.pressed:
-            if rect.collidepoint(pos):
-                self.pressed = True
-                self.open = not self.open
+        if pressed[0]:
+            self.pressed = rect.collidepoint(pos)
+            if self.open and menuRect.collidepoint(pos):
+                self.optPressed = idx
             else:
-                menuRect: pg.Rect = rect.copy()
-                menuRect.y += menuRect.height
-                menuRect.height *= len(self.options) - 1
-
-                if self.open and menuRect.collidepoint(pos):
-                    delta: int = pos[1] - menuRect.top
-                    idx: int = max(0, min(delta // rect.height, len(self.options) - 1))
-                    if idx >= self.selected:
-                        idx += 1  # Selected option skipping offset
-
-                    option: str = self.options[idx]
-                    print(f"[?] Dropdown option pressed: {delta=}, {idx=}, {option=}")
-
-                    self.selected = idx
-                    self.onClick(option)
-
-                self.open = False
+                self.optPressed = -1
         elif not pressed[0]:
             self.pressed = False
+            self.optPressed = -1
+
+            if self.mouseDown:
+                self.mouseDown = False
+
+                if rect.collidepoint(pos):
+                    self.open = not self.open
+                elif self.open and menuRect.collidepoint(pos):
+                    self.open = False
+
+                    self.selected = idx
+                    self.onClick(self.options[idx])
 
         # Hover
         self.hovered = rect.collidepoint(pos)
+        self.mouseDown = pressed[0]
 
     def getOption(self) -> str:
-        self.selected = max(0, min(self.selected, len(self.options) - 1))
+        self.selected = limit(self.selected, 0, len(self.options) - 1)
         return self.options[self.selected]
+
+
+def limit(val: int, low: int, high: int):
+    return max(low, min(val, high))
