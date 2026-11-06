@@ -80,5 +80,8 @@ def run_sorter() -> None:
             elif ev.type == EventType.INSERT:
                 i, val = ev.args
                 array[i] = val
+            elif ev.type == EventType.WRITE:
+                val, i = ev.args
+                array[i] = val
 
             viz.graphPanel.handle_sort_event(ev)

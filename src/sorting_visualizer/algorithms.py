@@ -69,7 +69,7 @@ def insertion_sort(
         j: int = i - 1
 
         while j >= 0:
-            onOperation(Event(EventType.COMPARE, j))
+            onOperation(Event(EventType.COMPARE, i, j))
             if compare(lst[j], key):
                 onOperation(Event(EventType.WRITE, lst[j], j + 1))
                 lst[j + 1] = lst[j]
@@ -77,7 +77,7 @@ def insertion_sort(
             else:
                 break
 
-        onOperation(Event(EventType.WRITE))
+        onOperation(Event(EventType.WRITE, key, j + 1))
         lst[j + 1] = key
 
     onOperation(Event(EventType.DONE))

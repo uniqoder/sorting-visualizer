@@ -115,7 +115,7 @@ class GraphPanel(Panel):
             self.comparing = (event.args[0], event.args[1])
         elif event.type == EventType.SWAP:
             self.swapping = (event.args[0], event.args[1])
-        elif event.type == EventType.SET_PIVOT:
+        elif event.type == EventType.SET_PIVOT or event.type == EventType.SET_KEY:
             self.pivot_idx = event.args[0]
         elif event.type == EventType.DONE:
             self.done = True
