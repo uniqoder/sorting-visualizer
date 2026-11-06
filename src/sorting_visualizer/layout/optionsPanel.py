@@ -63,13 +63,21 @@ class OptionsPanel(Panel):
             top=round(0.15 * self.panel_rect.height),
         )
 
+        self.sortHeading: pg.Surface = style.font.heading.render(
+            "Sorting:", True, style.theme.primary_text
+        )
+        self.sortHeadingRect: pg.Rect = self.sortHeading.get_rect(
+            left=self.panel_rect.left + style.pad,
+            top=round(0.40 * self.panel_rect.height),
+        )
+
         # Labels
         self.algLabel: pg.Surface = style.font.small.render(
             "Algorithm:", True, style.theme.secondary_text
         )
         self.algLabelRect: pg.Rect = self.algLabel.get_rect(
             left=self.panel_rect.left + 2 * style.pad,
-            top=round(0.24 * self.panel_rect.height),
+            top=round(0.43 * self.panel_rect.height),
         )
 
         self.arrSizeLabel: pg.Surface = style.font.small.render(
@@ -85,7 +93,7 @@ class OptionsPanel(Panel):
             "Shuffle",
             pg.Rect(
                 0,
-                round(0.30 * self.panel_rect.height),
+                round(0.24 * self.panel_rect.height),
                 round(0.8 * btnWidth),
                 round(0.8 * btnHeight),
             ),
@@ -99,7 +107,7 @@ class OptionsPanel(Panel):
             0, 0, round(0.7 * btnWidth), round(0.6 * btnHeight)
         )
         srtAlgRect.right = self.panel_rect.right - style.pad
-        srtAlgRect.top = round(0.235 * self.panel_rect.height)
+        srtAlgRect.top = round(0.425 * self.panel_rect.height)
 
         self.algorithmDropdown: Dropdown = Dropdown(
             ["Bubble", "Selection", "Insertion", "Merge", "Quick"],
@@ -152,6 +160,7 @@ class OptionsPanel(Panel):
         )
 
         _ = _surface.blit(self.arrayHeading, self.arrayHeadingRect)
+        _ = _surface.blit(self.sortHeading, self.sortHeadingRect)
         _ = _surface.blit(self.algLabel, self.algLabelRect)
         _ = _surface.blit(self.arrSizeLabel, self.arrSizeRect)
 
