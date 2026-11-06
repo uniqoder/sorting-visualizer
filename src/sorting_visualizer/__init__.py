@@ -1,4 +1,4 @@
-from random import randrange
+from random import randrange, shuffle
 
 from sorting_visualizer.event import Event, EventType
 
@@ -43,10 +43,17 @@ def set_size(size: int) -> None:
     viz.graphPanel.reset()
 
 
+def shuffle_array() -> None:
+    viz.graphPanel.reset()
+    shuffle(array)
+    sort_events.clear()
+
+
 def main() -> None:
     viz.init()
 
     viz.optionsPanel.runButton.onClick = lambda: set_sorting()
+    viz.optionsPanel.shuffleButton.onClick = lambda: shuffle_array()
     viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm(alg)
     viz.optionsPanel.sizeDropdown.onClick = lambda size: set_size(int(size))
 

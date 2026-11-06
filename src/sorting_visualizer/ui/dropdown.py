@@ -166,8 +166,6 @@ class Dropdown(UI):
             self.optPressed = -1
 
             if self.mouseDown:
-                self.mouseDown = False
-
                 if rect.collidepoint(pos):
                     self.open = not self.open
                 elif self.open and menuRect.collidepoint(pos):

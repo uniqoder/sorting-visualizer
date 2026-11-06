@@ -45,15 +45,14 @@ class OptionsPanel(Panel):
         # Run button
         btnWidth: int = round(0.6 * self.panel_rect.width)
         btnHeight: int = round(0.06 * self.panel_rect.height)
-        y: int = round(0.7 * self.panel_rect.height)
-        x: int = self.panel_rect.centerx - btnWidth // 2
 
         self.runButton: Button = Button(
             "Run",
-            pg.Rect(x, y, btnWidth, btnHeight),
+            pg.Rect(0, round(0.7 * self.panel_rect.height), btnWidth, btnHeight),
             lambda: None,
             style=btnStyle,
         )
+        self.runButton.rect.centerx = self.panel_rect.centerx
 
         # Headings
         self.arrayHeading: pg.Surface = style.font.heading.render(
@@ -70,7 +69,7 @@ class OptionsPanel(Panel):
         )
         self.algLabelRect: pg.Rect = self.algLabel.get_rect(
             left=self.panel_rect.left + 2 * style.pad,
-            top=round(0.18 * self.panel_rect.height),
+            top=round(0.24 * self.panel_rect.height),
         )
 
         self.arrSizeLabel: pg.Surface = style.font.small.render(
@@ -78,15 +77,29 @@ class OptionsPanel(Panel):
         )
         self.arrSizeRect: pg.Rect = self.arrSizeLabel.get_rect(
             left=self.panel_rect.left + 2 * style.pad,
-            top=round(0.24 * self.panel_rect.height),
+            top=round(0.18 * self.panel_rect.height),
         )
+
+        # Shuffle button
+        self.shuffleButton: Button = Button(
+            "Shuffle",
+            pg.Rect(
+                0,
+                round(0.30 * self.panel_rect.height),
+                round(0.8 * btnWidth),
+                round(0.8 * btnHeight),
+            ),
+            lambda: None,
+            style=dropdownStyle,
+        )
+        self.shuffleButton.rect.centerx = self.panel_rect.centerx
 
         # Sorting algorithm dropdown
         srtAlgRect: pg.Rect = pg.Rect(
             0, 0, round(0.7 * btnWidth), round(0.6 * btnHeight)
         )
         srtAlgRect.right = self.panel_rect.right - style.pad
-        srtAlgRect.top = round(0.175 * self.panel_rect.height)
+        srtAlgRect.top = round(0.235 * self.panel_rect.height)
 
         self.algorithmDropdown: Dropdown = Dropdown(
             ["Bubble", "Selection", "Insertion", "Merge", "Quick"],
@@ -97,7 +110,7 @@ class OptionsPanel(Panel):
 
         # Array size dropdown
         sizeRect: pg.Rect = srtAlgRect.copy()
-        sizeRect.top = round(0.235 * self.panel_rect.height)
+        sizeRect.top = round(0.175 * self.panel_rect.height)
 
         self.sizeDropdown: Dropdown = Dropdown(
             ["10", "20", "30", "40", "50", "60", "70"],
@@ -143,11 +156,13 @@ class OptionsPanel(Panel):
         _ = _surface.blit(self.arrSizeLabel, self.arrSizeRect)
 
         self.runButton.draw(_surface)
+        self.shuffleButton.draw(_surface)
         self.sizeDropdown.draw(_surface)
         self.algorithmDropdown.draw(_surface)
 
     @override
     def update(self) -> None:
         self.runButton.update()
+        self.shuffleButton.update()
         self.sizeDropdown.update()
         self.algorithmDropdown.update()
