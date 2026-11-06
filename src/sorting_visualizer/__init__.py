@@ -15,14 +15,8 @@ def set_sorting() -> None:
     global sorting
     sorting = True
     set_algorithm(sorting_func)
-
-
-def set_algorithm(alg: str) -> None:
-    global sorting_func
-    sorting_func = alg.lower()
-    viz.graphPanel.set_algorithm_name(alg.capitalize() + " Sort")
-
     sort_events.clear()
+
     if sorting_func == "bubble":
         _ = algs.bubble_sort(array, onOperation=lambda e: sort_events.append(e))
     elif sorting_func == "insertion":
@@ -35,13 +29,18 @@ def set_algorithm(alg: str) -> None:
         _ = algs.quick_sort(array, onOperation=lambda e: sort_events.append(e))
 
 
+def set_algorithm(alg: str) -> None:
+    global sorting_func
+    sorting_func = alg.lower()
+    viz.graphPanel.set_algorithm_name(alg.capitalize() + " Sort")
+
+
 def set_size(size: int) -> None:
     global array, sorting
     array = [randrange(1, 100) for _ in range(size)]
     viz.graphPanel.set_array(array)
-    viz.graphPanel.done = False
     sorting = False
-    viz.graphPanel.sorted_count = 0
+    viz.graphPanel.reset()
 
 
 def main() -> None:

@@ -36,6 +36,14 @@ class GraphPanel(Panel):
             "Select an Algorithm", True, style.theme.primary_text
         )
 
+    def reset(self):
+        self.comparing = (-1, -1)
+        self.swapping = (-1, -1)
+        self.splits.clear()
+        self.pivot_idx = -1
+        self.done = False
+        self.sorted_count = 0
+
     @override
     def draw(self, _surface: pg.Surface) -> None:
         bw: int = self.style.border_width // 2
