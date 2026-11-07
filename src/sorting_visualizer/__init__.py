@@ -103,7 +103,7 @@ def main() -> None:
 
     viz.optionsPanel.algorithmDropdown.set_options(list(sorting_funcs.keys()))
     viz.optionsPanel.sizeDropdown.set_options(
-        ["10", "20", "30", "40", "50", "60", "70"]
+        ["10", "20", "30", "40", "50", "60", "70"], selected=4
     )
 
     set_algorithm(viz.optionsPanel.algorithmDropdown.getOption())
