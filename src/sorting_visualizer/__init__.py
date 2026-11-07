@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from random import randrange, shuffle
+from typing import cast
 
 from sorting_visualizer.event import Event, EventType
 
@@ -69,6 +70,13 @@ def set_algorithm(alg: str) -> None:
     global selected_sorter
     selected_sorter = alg.lower()
     viz.graphPanel.set_algorithm_name(alg.capitalize() + " Sort")
+
+    details = function_details[selected_sorter]
+    viz.detailsPanel.set_details(
+        cast(str, details["desc"]),
+        cast(dict[str, str], details["time"]),
+        cast(str, details["space"]),
+    )
 
 
 def set_size(size: int) -> None:
