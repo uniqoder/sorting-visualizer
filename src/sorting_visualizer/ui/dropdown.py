@@ -34,6 +34,14 @@ class Dropdown(UI):
         self.mouseDown: bool = True
         self.optPressed: int = -1
 
+    def set_options(self, options: list[str], selected: int = 0):
+        self.open = False
+        self.options = options
+        self.selected = selected
+        self.text_surfs = [
+            self.style.font.render(txt, True, self.style.fg_color) for txt in options
+        ]
+
     @override
     def draw(self, _surface: pg.Surface) -> None:
         rect: pg.Rect = self.rect

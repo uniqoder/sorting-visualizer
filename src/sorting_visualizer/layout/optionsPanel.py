@@ -110,7 +110,7 @@ class OptionsPanel(Panel):
         srtAlgRect.top = round(0.425 * self.panel_rect.height)
 
         self.algorithmDropdown: Dropdown = Dropdown(
-            ["Bubble", "Selection", "Insertion", "Merge", "Quick"],
+            [],
             srtAlgRect,
             lambda op: None,
             style=dropdownStyle,
@@ -121,7 +121,7 @@ class OptionsPanel(Panel):
         sizeRect.top = round(0.175 * self.panel_rect.height)
 
         self.sizeDropdown: Dropdown = Dropdown(
-            ["10", "20", "30", "40", "50", "60", "70"],
+            [],
             sizeRect,
             lambda op: None,
             style=dropdownStyle,
