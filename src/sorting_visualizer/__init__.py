@@ -18,6 +18,35 @@ sorting_funcs: dict[str, Sorter] = {
     "quick": algs.quick_sort,
 }
 
+FuncData = dict[str, str | dict[str, str]]
+function_details: dict[str, FuncData] = {
+    "bubble": {
+        "time": {"best": "O(n)", "avg": "O(n^2)", "worst": "O(n^2)"},
+        "space": "O(1)",
+        "desc": "Repeatedly compares adjacent elements and swaps them if they are in the wrong order. Each pass moves the largest unsorted element to its correct position.",
+    },
+    "selection": {
+        "time": {"best": "O(n^2)", "avg": "O(n^2)", "worst": "O(n^2)"},
+        "space": "O(1)",
+        "desc": "Finds the smallest element in the unsorted portion and swaps it with the first unsorted element. Repeats until the entire array is sorted.",
+    },
+    "insertion": {
+        "time": {"best": "O(n)", "avg": "O(n^2)", "worst": "O(n^2)"},
+        "space": "O(1)",
+        "desc": "Builds a sorted portion one element at a time. Each new element is inserted into its correct position by shifting larger elements to the right.",
+    },
+    "merge": {
+        "time": {"best": "O(nlog(n))", "avg": "O(nlog(n))", "worst": "O(nlog(n))"},
+        "space": "O(n)",
+        "desc": "Recursively divides the array into smaller halves until indivisual elements remain. Then merges the halves back together in sorted order.",
+    },
+    "quick": {
+        "time": {"best": "O(nlog(n))", "avg": "O(nlog(n))", "worst": "O(n^2)"},
+        "space": "O(log(n))*",
+        "desc": "Selects a pivot and partitions the array so that smaller elements appear before it. Recursively sorts the resulting partitions. Implementation can change memory overhead.",
+    },
+}
+
 array: list[int] = []
 selected_sorter: str = "merge"
 sorting: bool = False
