@@ -53,9 +53,14 @@ selected_sorter: str = "merge"
 sorting: bool = False
 sort_events: list[Event] = []
 
+# Stats
+stat_cmp: int = 0
+stat_swp: int = 0
+stat_wrt: int = 0
+
 
 def set_sorting() -> None:
-    global sorting
+    global sorting, stat_wrt, stat_cmp, stat_swp
     sorting = True
     set_algorithm(selected_sorter)
     sort_events.clear()
@@ -64,6 +69,14 @@ def set_sorting() -> None:
         _ = sorting_funcs[selected_sorter](
             array, algs.ascending, lambda e: sort_events.append(e)
         )
+
+    stat_cmp = 0
+    stat_swp = 0
+    stat_wrt = 0
+
+    viz.statsPanel.update_stat("compare", str(stat_cmp))
+    viz.statsPanel.update_stat("swap", str(stat_swp))
+    viz.statsPanel.update_stat("write", str(stat_wrt))
 
 
 def set_algorithm(alg: str) -> None:
@@ -112,6 +125,7 @@ def main() -> None:
 
 
 def run_sorter() -> None:
+    global stat_cmp, stat_swp, stat_wrt
     running: int = 1
 
     while running:
@@ -138,5 +152,16 @@ def run_sorter() -> None:
             elif ev.type == EventType.WRITE:
                 val, i = ev.args
                 array[i] = val
+
+            # Stat updates
+            if ev.type == EventType.COMPARE:
+                stat_cmp += 1
+                viz.statsPanel.update_stat("compare", str(stat_cmp))
+            elif ev.type == EventType.SWAP:
+                stat_swp += 1
+                viz.statsPanel.update_stat("swap", str(stat_cmp))
+            if ev.type == EventType.WRITE or ev.type == EventType.INSERT:
+                stat_wrt += 1
+                viz.statsPanel.update_stat("write", str(stat_cmp))
 
             viz.graphPanel.handle_sort_event(ev)

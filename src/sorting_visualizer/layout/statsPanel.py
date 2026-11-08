@@ -107,3 +107,29 @@ class StatsPanel(Panel):
         _ = _surface.blit(self.valCmp, self.valCmpRect)
         _ = _surface.blit(self.valSwp, self.valSwpRect)
         _ = _surface.blit(self.valWrt, self.valWrtRect)
+
+    def update_stat(self, name: str, val: str) -> None:
+        if name == "compare":
+            self.valCmp = self.style.font.small.render(
+                val, True, self.style.theme.secondary_text
+            )
+            self.valCmpRect = self.valCmp.get_rect(
+                left=self.panel_rect.right - self.valCmp.get_width() - self.style.pad,
+                top=self.labelCmpRect.top,
+            )
+        elif name == "swap":
+            self.valSwp = self.style.font.small.render(
+                val, True, self.style.theme.secondary_text
+            )
+            self.valSwpRect = self.valSwp.get_rect(
+                left=self.panel_rect.right - self.valSwp.get_width() - self.style.pad,
+                top=self.labelSwpRect.top,
+            )
+        elif name == "write":
+            self.valWrt: pg.Surface = self.style.font.small.render(
+                val, True, self.style.theme.secondary_text
+            )
+            self.valWrtRect: pg.Rect = self.valWrt.get_rect(
+                left=self.panel_rect.right - self.valWrt.get_width() - self.style.pad,
+                top=self.labelWrtRect.top,
+            )
