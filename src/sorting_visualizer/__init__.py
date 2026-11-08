@@ -156,12 +156,12 @@ def run_sorter() -> None:
             # Stat updates
             if ev.type == EventType.COMPARE:
                 stat_cmp += 1
-                viz.statsPanel.update_stat("compare", str(stat_cmp))
+                viz.statsPanel.update_stat("compare", f"{stat_cmp:,}")
             elif ev.type == EventType.SWAP:
                 stat_swp += 1
-                viz.statsPanel.update_stat("swap", str(stat_cmp))
+                viz.statsPanel.update_stat("swap", f"{stat_swp:,}")
             if ev.type == EventType.WRITE or ev.type == EventType.INSERT:
                 stat_wrt += 1
-                viz.statsPanel.update_stat("write", str(stat_cmp))
+                viz.statsPanel.update_stat("write", f"{stat_wrt:,}")
 
             viz.graphPanel.handle_sort_event(ev)
