@@ -1,3 +1,4 @@
+from turtle import width
 from typing import override
 
 import pygame as pg
@@ -53,7 +54,7 @@ class OptionsPanel(Panel):
         )
         self.runButton.rect.centerx = self.panel_rect.centerx
 
-        # Headings
+        # Array settings
         self.arrayHeading: pg.Surface = style.font.heading.render(
             "Array:", True, style.theme.primary_text
         )
@@ -62,66 +63,86 @@ class OptionsPanel(Panel):
             top=round(0.15 * self.panel_rect.height),
         )
 
-        self.sortHeading: pg.Surface = style.font.heading.render(
-            "Sorting:", True, style.theme.primary_text
-        )
-        self.sortHeadingRect: pg.Rect = self.sortHeading.get_rect(
-            left=self.panel_rect.left + style.pad,
-            top=round(0.40 * self.panel_rect.height),
-        )
-
-        # Labels
-        self.algLabel: pg.Surface = style.font.small.render(
-            "Algorithm:", True, style.theme.secondary_text
-        )
-        self.algLabelRect: pg.Rect = self.algLabel.get_rect(
-            left=self.panel_rect.left + 2 * style.pad,
-            top=round(0.43 * self.panel_rect.height),
-        )
-
         self.arrSizeLabel: pg.Surface = style.font.small.render(
             "Size:", True, style.theme.secondary_text
         )
         self.arrSizeRect: pg.Rect = self.arrSizeLabel.get_rect(
-            left=self.panel_rect.left + 2 * style.pad,
-            top=round(0.18 * self.panel_rect.height),
+            left=self.arrayHeadingRect.left + style.pad,
+            top=self.arrayHeadingRect.bottom + 2 * style.gap,
         )
 
-        # Shuffle button
-        self.shuffleButton: Button = Button(
-            "Shuffle",
-            pg.Rect(
-                0,
-                round(0.24 * self.panel_rect.height),
-                round(0.8 * btnWidth),
-                round(0.8 * btnHeight),
-            ),
-            lambda: None,
-            style=dropdownStyle,
-        )
-        self.shuffleButton.rect.centerx = self.panel_rect.centerx
-
-        # Sorting algorithm dropdown
-        srtAlgRect: pg.Rect = pg.Rect(
-            0, 0, round(0.7 * btnWidth), round(0.6 * btnHeight)
-        )
-        srtAlgRect.right = self.panel_rect.right - style.pad
-        srtAlgRect.top = round(0.425 * self.panel_rect.height)
-
-        self.algorithmDropdown: Dropdown = Dropdown(
+        dropdownWidth: int = round(0.7 * btnWidth)
+        dropdownHeight: int = round(0.6 * btnHeight)
+        self.sizeDropdown: Dropdown = Dropdown(
             [],
-            srtAlgRect,
+            pg.Rect(
+                self.panel_rect.right - dropdownWidth - style.pad,
+                self.arrSizeRect.top,
+                dropdownWidth,
+                dropdownHeight,
+            ),
             lambda op: None,
             style=dropdownStyle,
         )
 
-        # Array size dropdown
-        sizeRect: pg.Rect = srtAlgRect.copy()
-        sizeRect.top = round(0.175 * self.panel_rect.height)
+        sflWidth: int = round(0.8 * btnWidth)
+        sflHeight: int = round(0.8 * btnHeight)
+        self.shuffleButton: Button = Button(
+            "Shuffle",
+            pg.Rect(
+                self.panel_rect.centerx - sflWidth // 2,
+                self.arrSizeRect.bottom + 4 * style.gap,
+                sflWidth,
+                sflHeight,
+            ),
+            lambda: None,
+            style=dropdownStyle,
+        )
 
-        self.sizeDropdown: Dropdown = Dropdown(
+        # Sorting settings
+        self.sortHeading: pg.Surface = style.font.heading.render(
+            "Sorting:", True, style.theme.primary_text
+        )
+        self.sortHeadingRect: pg.Rect = self.sortHeading.get_rect(
+            left=self.arrayHeadingRect.left,
+            top=self.shuffleButton.rect.bottom + 2 * style.pad,
+        )
+
+        self.algLabel: pg.Surface = style.font.small.render(
+            "Algorithm:", True, style.theme.secondary_text
+        )
+        self.algLabelRect: pg.Rect = self.algLabel.get_rect(
+            left=self.arrSizeRect.left,
+            top=self.sortHeadingRect.bottom + 2 * style.pad,
+        )
+
+        self.algorithmDropdown: Dropdown = Dropdown(
             [],
-            sizeRect,
+            pg.Rect(
+                self.sizeDropdown.rect.left,
+                self.algLabelRect.top,
+                dropdownWidth,
+                dropdownHeight,
+            ),
+            lambda op: None,
+            style=dropdownStyle,
+        )
+
+        self.orderLabel: pg.Surface = style.font.small.render(
+            "Order:", True, style.theme.secondary_text
+        )
+        self.orderLabelRect: pg.Rect = self.orderLabel.get_rect(
+            left=self.algLabelRect.left, top=self.algLabelRect.bottom + 3 * style.gap
+        )
+
+        self.orderDropdown: Dropdown = Dropdown(
+            [],
+            pg.Rect(
+                self.sizeDropdown.rect.left,
+                self.orderLabelRect.top,
+                dropdownWidth,
+                dropdownHeight,
+            ),
             lambda op: None,
             style=dropdownStyle,
         )
@@ -162,11 +183,13 @@ class OptionsPanel(Panel):
         _ = _surface.blit(self.sortHeading, self.sortHeadingRect)
         _ = _surface.blit(self.algLabel, self.algLabelRect)
         _ = _surface.blit(self.arrSizeLabel, self.arrSizeRect)
+        _ = _surface.blit(self.orderLabel, self.orderLabelRect)
 
         self.runButton.draw(_surface)
         self.shuffleButton.draw(_surface)
         self.sizeDropdown.draw(_surface)
         self.algorithmDropdown.draw(_surface)
+        self.orderDropdown.draw(_surface)
 
     @override
     def update(self) -> None:
@@ -174,3 +197,4 @@ class OptionsPanel(Panel):
         self.shuffleButton.update()
         self.sizeDropdown.update()
         self.algorithmDropdown.update()
+        self.orderDropdown.update()

@@ -17,13 +17,12 @@ class Dropdown(UI):
     ) -> None:
         super().__init__(row_rect, style)
 
-        self.options: list[str] = options
-        self.selected: int = selected
         self.onClick: Callable[[str], None] = onClick
 
-        self.text_surfs: list[pg.Surface] = [
-            style.font.render(txt, True, style.fg_color) for txt in options
-        ]
+        self.options: list[str]
+        self.selected: int
+        self.text_surfs: list[pg.Surface]
+        self.set_options(options, selected)
 
         # Settings
         self.hovered: bool = False
@@ -39,7 +38,8 @@ class Dropdown(UI):
         self.options = options
         self.selected = selected
         self.text_surfs = [
-            self.style.font.render(txt, True, self.style.fg_color) for txt in options
+            self.style.font.render(txt.capitalize(), True, self.style.fg_color)
+            for txt in options
         ]
 
     @override

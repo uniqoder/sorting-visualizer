@@ -2,10 +2,9 @@ from collections.abc import Callable
 from random import randrange, shuffle
 from typing import cast
 
-from .event import Event, EventType
-
 from . import algorithms as algs
 from . import visualizer as viz
+from .event import Event, EventType
 
 Sorter = Callable[
     [list[int], algs.Comparator, Callable[[Event], None] | None],
@@ -17,6 +16,11 @@ sorting_funcs: dict[str, Sorter] = {
     "selection": algs.selection_sort,
     "merge": algs.merge_sort,
     "quick": algs.quick_sort,
+}
+
+sorting_order: dict[str, Callable[[int, int], bool]] = {
+    "ascending": algs.ascending,
+    "descending": algs.descending,
 }
 
 FuncData = dict[str, str | dict[str, str]]
@@ -50,6 +54,7 @@ function_details: dict[str, FuncData] = {
 
 array: list[int] = []
 selected_sorter: str = "merge"
+srt_order: str = next(iter(sorting_order.keys()))  # Get the first key
 sorting: bool = False
 sort_events: list[Event] = []
 
@@ -67,7 +72,7 @@ def set_sorting() -> None:
 
     if selected_sorter in sorting_funcs:
         _ = sorting_funcs[selected_sorter](
-            array, algs.ascending, lambda e: sort_events.append(e)
+            array, sorting_order[srt_order], lambda e: sort_events.append(e)
         )
 
     stat_cmp = 0
@@ -77,6 +82,8 @@ def set_sorting() -> None:
     viz.statsPanel.update_stat("compare", str(stat_cmp))
     viz.statsPanel.update_stat("swap", str(stat_swp))
     viz.statsPanel.update_stat("write", str(stat_wrt))
+
+    viz.graphPanel.reset()
 
 
 def set_algorithm(alg: str) -> None:
@@ -100,6 +107,13 @@ def set_size(size: int) -> None:
     viz.graphPanel.reset()
 
 
+def set_order(order: str):
+    global srt_order
+
+    if order in sorting_order:
+        srt_order = order
+
+
 def shuffle_array() -> None:
     viz.graphPanel.reset()
     shuffle(array)
@@ -113,11 +127,13 @@ def main() -> None:
     viz.optionsPanel.shuffleButton.onClick = lambda: shuffle_array()
     viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm(alg)
     viz.optionsPanel.sizeDropdown.onClick = lambda size: set_size(int(size))
+    viz.optionsPanel.orderDropdown.onClick = lambda order: set_order(order)
 
     viz.optionsPanel.algorithmDropdown.set_options(list(sorting_funcs.keys()))
     viz.optionsPanel.sizeDropdown.set_options(
         ["10", "20", "30", "40", "50", "60", "70"], selected=4
     )
+    viz.optionsPanel.orderDropdown.set_options(list(sorting_order.keys()))
 
     set_algorithm(viz.optionsPanel.algorithmDropdown.getOption())
     set_size(int(viz.optionsPanel.sizeDropdown.getOption()))
