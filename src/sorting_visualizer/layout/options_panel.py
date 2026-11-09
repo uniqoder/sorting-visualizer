@@ -249,7 +249,7 @@ class OptionsPanel(Panel):
         super().set_theme(theme)
 
         btnStyle: ui.Style = ui.Style(
-            self.style.font.label,
+            self.style.font.small,
             bg_color=self.style.theme.primary_accent,
             fg_color=self.style.theme.primary_text,
             border_color=self.style.theme.border,
