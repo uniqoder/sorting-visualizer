@@ -186,10 +186,10 @@ class OptionsPanel(Panel):
         _ = _surface.blit(self.orderLabel, self.orderLabelRect)
 
         self.runButton.draw(_surface)
+        self.orderDropdown.draw(_surface)
+        self.algorithmDropdown.draw(_surface)
         self.shuffleButton.draw(_surface)
         self.sizeDropdown.draw(_surface)
-        self.algorithmDropdown.draw(_surface)
-        self.orderDropdown.draw(_surface)
 
     @override
     def update(self) -> None:
