@@ -1,8 +1,8 @@
-from .detailsPanel import DetailsPanel
-from .graphPanel import GraphPanel
-from .optionsPanel import OptionsPanel
+from .details_panel import DetailsPanel
+from .graph_panel import GraphPanel
+from .options_panel import OptionsPanel
 from .panel import Panel, Style
-from .statsPanel import StatsPanel
+from .stats_panel import StatsPanel
 
 
 def construct_layout(win_size: tuple[int, int], style: Style) -> dict[str, Panel]:

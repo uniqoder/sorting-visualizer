@@ -2,7 +2,7 @@ from collections.abc import Callable
 from random import randrange, shuffle
 from typing import cast
 
-from sorting_visualizer.event import Event, EventType
+from .event import Event, EventType
 
 from . import algorithms as algs
 from . import visualizer as viz

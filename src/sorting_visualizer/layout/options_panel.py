@@ -2,10 +2,9 @@ from typing import override
 
 import pygame as pg
 
-from sorting_visualizer.ui.dropdown import Dropdown
-
 from .. import ui
 from ..ui.button import Button
+from ..ui.dropdown import Dropdown
 from .panel import Panel, Style
 
 

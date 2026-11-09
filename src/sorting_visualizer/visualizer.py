@@ -3,13 +3,13 @@ from typing import cast
 import pygame as pg
 from pygame.time import Clock
 
-from sorting_visualizer.layout import Panel, Style, construct_layout
-from sorting_visualizer.layout.detailsPanel import DetailsPanel
-from sorting_visualizer.layout.graphPanel import GraphPanel
-from sorting_visualizer.layout.optionsPanel import OptionsPanel
-from sorting_visualizer.layout.statsPanel import StatsPanel
-
 from .font import Font
+from .layout import construct_layout
+from .layout.details_panel import DetailsPanel
+from .layout.graph_panel import GraphPanel
+from .layout.options_panel import OptionsPanel
+from .layout.panel import Panel, Style
+from .layout.stats_panel import StatsPanel
 from .theme import MIDNIGHT_INDIGO, Theme
 
 WIN_SIZE = WIN_WIDTH, WIN_HEIGHT = 1280, 800
