@@ -3,7 +3,9 @@ from typing import override
 
 import pygame as pg
 
+from sorting_visualizer import ui
 from sorting_visualizer.event import Event, EventType
+from sorting_visualizer.theme import Theme
 
 from .panel import Panel, Style
 
@@ -32,8 +34,9 @@ class GraphPanel(Panel):
         self.bar_height: int = round(self.panel_rect.height * 0.7)
         self.bar_width: int = 10
 
+        self.algName: str = "Select an Algorithm"
         self.algorithm_name: pg.Surface = style.font.heading.render(
-            "Select an Algorithm", True, style.theme.primary_text
+            self.algName, True, style.theme.primary_text
         )
 
     def reset(self):
@@ -102,6 +105,7 @@ class GraphPanel(Panel):
             self.sorted_count += 1
 
     def set_algorithm_name(self, name: str) -> None:
+        self.algName = name
         self.algorithm_name = self.style.font.heading.render(
             name, True, self.style.theme.primary_text
         )
@@ -149,3 +153,11 @@ class GraphPanel(Panel):
             color = self.style.theme.bar_sorted
 
         return color
+
+    @override
+    def set_theme(self, theme: Theme) -> None:
+        super().set_theme(theme)
+
+        self.algorithm_name = self.style.font.heading.render(
+            self.algName, True, self.style.theme.primary_text
+        )

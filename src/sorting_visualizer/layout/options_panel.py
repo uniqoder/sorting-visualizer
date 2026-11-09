@@ -1,7 +1,8 @@
-from turtle import width
 from typing import override
 
 import pygame as pg
+
+from ..theme import Theme
 
 from .. import ui
 from ..ui.button import Button
@@ -24,23 +25,7 @@ class OptionsPanel(Panel):
             "Visualizer", True, style.theme.primary_text
         )
 
-        btnStyle: ui.Style = ui.Style(
-            style.font.label,
-            bg_color=style.theme.primary_accent,
-            fg_color=style.theme.primary_text,
-            border_color=style.theme.border,
-            hover_color=style.theme.secondary_accent,
-            active_color=style.theme.panel,
-            border_width=2,
-            border_radius=12,
-        )
-
-        dropdownStyle: ui.Style = btnStyle.copy()
-        dropdownStyle.font = style.font.small
-        dropdownStyle.bg_color = style.theme.panel
-        dropdownStyle.hover_color = dropdownStyle.bg_color
-        dropdownStyle.active_color = style.theme.secondary_accent
-        dropdownStyle.fg_color = style.theme.secondary_text
+        defaultStyle: ui.Style = ui.Style(style.font.label)
 
         # Run button
         btnWidth: int = round(0.6 * self.panel_rect.width)
@@ -50,7 +35,7 @@ class OptionsPanel(Panel):
             "Run",
             pg.Rect(0, round(0.7 * self.panel_rect.height), btnWidth, btnHeight),
             lambda: None,
-            style=btnStyle,
+            style=defaultStyle,
         )
         self.runButton.rect.centerx = self.panel_rect.centerx
 
@@ -82,7 +67,7 @@ class OptionsPanel(Panel):
                 dropdownHeight,
             ),
             lambda op: None,
-            style=dropdownStyle,
+            style=defaultStyle,
         )
 
         sflWidth: int = round(0.8 * btnWidth)
@@ -96,7 +81,7 @@ class OptionsPanel(Panel):
                 sflHeight,
             ),
             lambda: None,
-            style=dropdownStyle,
+            style=defaultStyle,
         )
 
         # Sorting settings
@@ -125,7 +110,7 @@ class OptionsPanel(Panel):
                 dropdownHeight,
             ),
             lambda op: None,
-            style=dropdownStyle,
+            style=defaultStyle,
         )
 
         self.orderLabel: pg.Surface = style.font.small.render(
@@ -144,8 +129,65 @@ class OptionsPanel(Panel):
                 dropdownHeight,
             ),
             lambda op: None,
-            style=dropdownStyle,
+            style=defaultStyle,
         )
+
+        # Theme setting
+        self.themeLabel: pg.Surface = style.font.small.render(
+            "Theme:", True, style.theme.primary_text
+        )
+        self.themeLabelRect: pg.Rect = self.themeLabel.get_rect(
+            left=self.arrayHeadingRect.left,
+            top=self.panel_rect.bottom - self.themeLabel.get_height() - 2 * style.pad,
+        )
+
+        self.themeDropdown: Dropdown = Dropdown(
+            [],
+            pg.Rect(
+                self.themeLabelRect.right + 2 * style.gap,
+                self.themeLabelRect.top,
+                self.panel_rect.width - self.themeLabelRect.width - 3 * style.pad,
+                dropdownHeight,
+            ),
+            lambda op: None,
+            style=defaultStyle,
+        )
+
+        self.set_theme(style.theme)
+
+    def render_texts(self) -> None:
+        self.title = self.style.font.title.render(
+            "Visualizer", True, self.style.theme.primary_text
+        )
+
+        self.arrayHeading = self.style.font.heading.render(
+            "Array:", True, self.style.theme.primary_text
+        )
+        self.arrSizeLabel = self.style.font.small.render(
+            "Size:", True, self.style.theme.secondary_text
+        )
+
+        self.sortHeading = self.style.font.heading.render(
+            "Sorting:", True, self.style.theme.primary_text
+        )
+        self.algLabel = self.style.font.small.render(
+            "Algorithm:", True, self.style.theme.secondary_text
+        )
+        self.orderLabel = self.style.font.small.render(
+            "Order:", True, self.style.theme.secondary_text
+        )
+
+        self.themeLabel = self.style.font.small.render(
+            "Theme:", True, self.style.theme.primary_text
+        )
+
+        self.runButton.render_texts()
+        self.shuffleButton.render_texts()
+
+        self.sizeDropdown.render_texts()
+        self.algorithmDropdown.render_texts()
+        self.orderDropdown.render_texts()
+        self.themeDropdown.render_texts()
 
     @override
     def draw(self, _surface: pg.Surface) -> None:
@@ -184,7 +226,9 @@ class OptionsPanel(Panel):
         _ = _surface.blit(self.algLabel, self.algLabelRect)
         _ = _surface.blit(self.arrSizeLabel, self.arrSizeRect)
         _ = _surface.blit(self.orderLabel, self.orderLabelRect)
+        _ = _surface.blit(self.themeLabel, self.themeLabelRect)
 
+        self.themeDropdown.draw(_surface)
         self.runButton.draw(_surface)
         self.orderDropdown.draw(_surface)
         self.algorithmDropdown.draw(_surface)
@@ -198,3 +242,35 @@ class OptionsPanel(Panel):
         self.sizeDropdown.update()
         self.algorithmDropdown.update()
         self.orderDropdown.update()
+        self.themeDropdown.update()
+
+    @override
+    def set_theme(self, theme: Theme) -> None:
+        super().set_theme(theme)
+
+        btnStyle: ui.Style = ui.Style(
+            self.style.font.label,
+            bg_color=self.style.theme.primary_accent,
+            fg_color=self.style.theme.primary_text,
+            border_color=self.style.theme.border,
+            hover_color=self.style.theme.secondary_accent,
+            active_color=self.style.theme.panel,
+            border_width=2,
+            border_radius=12,
+        )
+
+        self.runButton.style = btnStyle
+
+        dropdownStyle: ui.Style = btnStyle.copy()
+        dropdownStyle.bg_color = self.style.theme.panel
+        dropdownStyle.hover_color = dropdownStyle.bg_color
+        dropdownStyle.active_color = self.style.theme.secondary_accent
+        dropdownStyle.fg_color = self.style.theme.secondary_text
+
+        self.shuffleButton.style = dropdownStyle
+        self.sizeDropdown.style = dropdownStyle
+        self.algorithmDropdown.style = dropdownStyle
+        self.orderDropdown.style = dropdownStyle
+        self.themeDropdown.style = dropdownStyle
+
+        self.render_texts()

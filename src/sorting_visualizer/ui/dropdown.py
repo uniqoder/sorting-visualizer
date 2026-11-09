@@ -37,9 +37,14 @@ class Dropdown(UI):
         self.open = False
         self.options = options
         self.selected = selected
+
+        self.render_texts()
+
+    @override
+    def render_texts(self) -> None:
         self.text_surfs = [
             self.style.font.render(txt.capitalize(), True, self.style.fg_color)
-            for txt in options
+            for txt in self.options
         ]
 
     @override

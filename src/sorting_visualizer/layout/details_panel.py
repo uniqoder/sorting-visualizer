@@ -3,6 +3,8 @@ from typing import override
 import pygame as pg
 from pygame.font import Font
 
+from sorting_visualizer.theme import Theme
+
 from .panel import Panel, Style
 
 
@@ -28,6 +30,7 @@ class DetailsPanel(Panel):
             top=self.panel_rect.top + style.pad,
         )
 
+        self.description: str
         self.descTexts: list[pg.Surface] = []
         self.descTextRect: pg.Rect = pg.Rect(
             self.panel_rect.left + 2 * style.pad,
@@ -52,6 +55,7 @@ class DetailsPanel(Panel):
             left=self.panel_rect.left + 2 * style.pad,
             top=self.panel_rect.bottom - 2 * style.pad,
         )
+        self.timeBestTxt: str
         self.timeBest: pg.Surface
         self.timeBestPos: list[int] = [0, self.labelBestRect.y]
 
@@ -62,6 +66,7 @@ class DetailsPanel(Panel):
             left=self.labelBestRect.right + style.gap,
             top=self.panel_rect.bottom - 2 * style.pad,
         )
+        self.timeAvgTxt: str
         self.timeAvg: pg.Surface
         self.timeAvgPos: list[int] = [0, self.labelAvgRect.y]
 
@@ -72,6 +77,7 @@ class DetailsPanel(Panel):
             left=self.labelAvgRect.right + style.gap,
             top=self.panel_rect.bottom - 2 * style.pad,
         )
+        self.timeWorstTxt: str
         self.timeWorst: pg.Surface
         self.timeWorstPos: list[int] = [0, self.labelWorstRect.y]
 
@@ -85,6 +91,7 @@ class DetailsPanel(Panel):
         )
         self.spaceHeadingRect.x -= self.spaceHeadingRect.width
 
+        self.spaceComplexityTxt: str
         self.spaceComplexity: pg.Surface
         self.spacePos: list[int] = [
             0,
@@ -92,43 +99,28 @@ class DetailsPanel(Panel):
         ]
 
     def set_details(self, description: str, time: dict[str, str], space: str):
-        self.descTexts.clear()
+        self.description = description
+        self.timeBestTxt = time.get("best", "")
+        self.timeAvgTxt = time.get("avg", "")
+        self.timeWorstTxt = time.get("worst", "")
+        self.spaceComplexityTxt = space
 
-        for line in wrap_text(
-            description, self.style.font.small, self.descTextRect.width
-        ):
-            self.descTexts.append(
-                self.style.font.small.render(
-                    line, True, self.style.theme.secondary_text
-                )
-            )
+        self.render_texts()
 
         # Time complexities
-        self.timeBest = self.style.font.small.render(
-            time.get("best", "Unk"), True, self.style.theme.secondary_text
-        )
         self.timeBestPos[0] = self.labelBestRect.right + self.style.pad
 
         self.labelAvgRect.x = (
             self.timeBestPos[0] + self.timeBest.get_width() + self.style.pad
-        )
-        self.timeAvg = self.style.font.small.render(
-            time.get("avg", "Unk"), True, self.style.theme.secondary_text
         )
         self.timeAvgPos[0] = self.labelAvgRect.right + self.style.pad
 
         self.labelWorstRect.x = (
             self.timeAvgPos[0] + self.timeAvg.get_width() + self.style.pad
         )
-        self.timeWorst = self.style.font.small.render(
-            time.get("worst", "Unk"), True, self.style.theme.secondary_text
-        )
         self.timeWorstPos[0] = self.labelWorstRect.right + self.style.pad
 
         # Space complexity
-        self.spaceComplexity = self.style.font.small.render(
-            space, True, self.style.theme.secondary_text
-        )
         self.spacePos[0] = (
             self.spaceHeadingRect.centerx - self.spaceComplexity.get_width() // 2
         )
@@ -175,6 +167,58 @@ class DetailsPanel(Panel):
         for line in self.descTexts:
             _ = _surface.blit(line, (self.descTextRect.x, y))
             y += line_size + line_spacing
+
+    @override
+    def set_theme(self, theme: Theme) -> None:
+        super().set_theme(theme)
+
+        self.descHeading = self.style.font.heading.render(
+            "Description", True, self.style.theme.primary_text
+        )
+        self.timeHeading = self.style.font.heading.render(
+            "Time", True, self.style.theme.primary_text
+        )
+        self.labelBest = self.style.font.label.render(
+            "Best:", True, self.style.theme.primary_text
+        )
+        self.labelAvg = self.style.font.label.render(
+            "Average:", True, self.style.theme.primary_text
+        )
+        self.labelWorst = self.style.font.label.render(
+            "Worst:", True, self.style.theme.primary_text
+        )
+        self.spaceHeading = self.style.font.heading.render(
+            "Space", True, self.style.theme.primary_text
+        )
+
+        self.render_texts()
+
+    def render_texts(self) -> None:
+        self.descTexts.clear()
+
+        for line in wrap_text(
+            self.description, self.style.font.small, self.descTextRect.width
+        ):
+            self.descTexts.append(
+                self.style.font.small.render(
+                    line, True, self.style.theme.secondary_text
+                )
+            )
+
+        # Time complexities
+        self.timeBest = self.style.font.small.render(
+            self.timeBestTxt, True, self.style.theme.secondary_text
+        )
+        self.timeAvg = self.style.font.small.render(
+            self.timeAvgTxt, True, self.style.theme.secondary_text
+        )
+        self.timeWorst = self.style.font.small.render(
+            self.timeWorstTxt, True, self.style.theme.secondary_text
+        )
+
+        self.spaceComplexity = self.style.font.small.render(
+            self.spaceComplexityTxt, True, self.style.theme.secondary_text
+        )
 
 
 def wrap_text(text: str, font: Font, max_width: int) -> list[str]:

@@ -67,3 +67,6 @@ class UI:
 
     def update(self) -> None:
         raise NotImplementedError
+
+    def render_texts(self) -> None:
+        raise NotImplementedError

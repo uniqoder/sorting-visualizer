@@ -37,3 +37,6 @@ class Panel:
 
     def handle_event(self, _event: pg.event.Event) -> None:
         raise NotImplementedError
+
+    def set_theme(self, theme: Theme) -> None:
+        self.style.theme = theme

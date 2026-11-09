@@ -19,12 +19,17 @@ class Button(UI):
         self.text: str = text
         self.onClick: Callable[[], None] = onClick
 
-        self.text_surf: pg.Surface = style.font.render(text, True, style.fg_color)
+        self.text_surf: pg.Surface
+        self.render_texts()
 
         # Settings
         self.hovered: bool = False
         self.pressed: bool = False
         self.enabled: bool = True
+
+    @override
+    def render_texts(self) -> None:
+        self.text_surf = self.style.font.render(self.text, True, self.style.fg_color)
 
     @override
     def draw(self, _surface: pg.Surface) -> None:

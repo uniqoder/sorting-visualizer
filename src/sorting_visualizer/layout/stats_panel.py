@@ -2,6 +2,8 @@ from typing import override
 
 import pygame as pg
 
+from sorting_visualizer.theme import Theme
+
 from .panel import Panel, Style
 
 
@@ -126,10 +128,38 @@ class StatsPanel(Panel):
                 top=self.labelSwpRect.top,
             )
         elif name == "write":
-            self.valWrt: pg.Surface = self.style.font.small.render(
+            self.valWrt = self.style.font.small.render(
                 val, True, self.style.theme.secondary_text
             )
-            self.valWrtRect: pg.Rect = self.valWrt.get_rect(
+            self.valWrtRect = self.valWrt.get_rect(
                 left=self.panel_rect.right - self.valWrt.get_width() - self.style.pad,
                 top=self.labelWrtRect.top,
             )
+
+    @override
+    def set_theme(self, theme: Theme) -> None:
+        super().set_theme(theme)
+
+        self.title = self.style.font.heading.render(
+            "Statistics", True, self.style.theme.primary_text
+        )
+
+        self.labelCmp = self.style.font.small.render(
+            "Comparisons", True, self.style.theme.secondary_text
+        )
+        self.labelSwp: pg.Surface = self.style.font.small.render(
+            "Swaps", True, self.style.theme.secondary_text
+        )
+        self.labelWrt = self.style.font.small.render(
+            "Writes", True, self.style.theme.secondary_text
+        )
+
+        self.valCmp = self.style.font.small.render(
+            "0", True, self.style.theme.secondary_text
+        )
+        self.valSwp = self.style.font.small.render(
+            "0", True, self.style.theme.secondary_text
+        )
+        self.valWrt = self.style.font.small.render(
+            "0", True, self.style.theme.secondary_text
+        )

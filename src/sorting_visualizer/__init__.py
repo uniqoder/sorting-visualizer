@@ -2,6 +2,9 @@ from collections.abc import Callable
 from random import randrange, shuffle
 from typing import cast
 
+from sorting_visualizer import theme
+from sorting_visualizer.theme import Theme
+
 from . import algorithms as algs
 from . import visualizer as viz
 from .event import Event, EventType
@@ -21,6 +24,11 @@ sorting_funcs: dict[str, Sorter] = {
 sorting_order: dict[str, Callable[[int, int], bool]] = {
     "ascending": algs.ascending,
     "descending": algs.descending,
+}
+
+themes: dict[str, Theme] = {
+    "midnight indigo": Theme(theme.MIDNIGHT_INDIGO),
+    "warm editorial": Theme(theme.WARM_EDITORIAL),
 }
 
 FuncData = dict[str, str | dict[str, str]]
@@ -120,6 +128,18 @@ def shuffle_array() -> None:
     sort_events.clear()
 
 
+def set_theme(name: str) -> None:
+    if name not in themes:
+        return
+
+    theme: Theme = themes[name]
+    viz.style.theme = theme
+    viz.optionsPanel.set_theme(theme)
+    viz.graphPanel.set_theme(theme)
+    viz.detailsPanel.set_theme(theme)
+    viz.statsPanel.set_theme(theme)
+
+
 def main() -> None:
     viz.init()
 
@@ -128,12 +148,14 @@ def main() -> None:
     viz.optionsPanel.algorithmDropdown.onClick = lambda alg: set_algorithm(alg)
     viz.optionsPanel.sizeDropdown.onClick = lambda size: set_size(int(size))
     viz.optionsPanel.orderDropdown.onClick = lambda order: set_order(order)
+    viz.optionsPanel.themeDropdown.onClick = lambda name: set_theme(name)
 
     viz.optionsPanel.algorithmDropdown.set_options(list(sorting_funcs.keys()))
     viz.optionsPanel.sizeDropdown.set_options(
         ["10", "20", "30", "40", "50", "60", "70"], selected=4
     )
     viz.optionsPanel.orderDropdown.set_options(list(sorting_order.keys()))
+    viz.optionsPanel.themeDropdown.set_options(list(themes.keys()))
 
     set_algorithm(viz.optionsPanel.algorithmDropdown.getOption())
     set_size(int(viz.optionsPanel.sizeDropdown.getOption()))
